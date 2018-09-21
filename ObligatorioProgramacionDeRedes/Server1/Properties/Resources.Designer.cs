@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Server1.Properties
+namespace Server.Properties
 {
 
 

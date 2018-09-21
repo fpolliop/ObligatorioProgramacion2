@@ -1,24 +1,21 @@
 ﻿using ObligatorioProgramacionDeRedes;
+using Protocol;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Server1
+namespace Server
 {
-    static class Program
+    public class Program
     {
-        /// <summary>
-        /// The main entry point for the application.
-        /// </summary>
-        [STAThread]
-        static void Main()
+        private static ServerProtocol serverProtocol;
+        static void Main(string[] args)
         {
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            Facade.Run();
-            Application.Run(new Board());
+            serverProtocol = new ServerProtocol();
+            serverProtocol.StartServer();
+            Console.ReadLine();
         }
     }
 }
