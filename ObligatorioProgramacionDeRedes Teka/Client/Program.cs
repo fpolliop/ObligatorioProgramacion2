@@ -16,6 +16,7 @@ namespace Client
 
         public static void Main(string[] args)
         {
+            //teka
             ClientController clientController = new ClientController();
             //debeeria hablar con clientController. no con clientProtocol
             Console.WriteLine("Conectando al servidor...");
