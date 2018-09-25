@@ -11,18 +11,28 @@ namespace Protocol
     public class ServerProtocol
     {
 
-        private Socket server;
         private int serverPort = Int32.Parse(ConfigurationSettings.AppSettings["Port"].ToString());
         private string serverIp = ConfigurationSettings.AppSettings["Ip"].ToString();
+        private Connection connection;
 
-        public Socket StartServer()
+        public void StartServer()
         {
-            server = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            Socket server = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             IPAddress localAddress = IPAddress.Parse(serverIp);
             IPEndPoint listener = new IPEndPoint(localAddress, serverPort);
             server.Bind(listener);
             server.Listen(100);
-            return server;
+            connection = new Connection(server);
+        }
+
+        public Frame ReceiveConnection()
+        {
+            Socket client = server.Accept();
+            Thread thread = new Thread(() => ProcessClient(client));
+            thread.Start();
+            connection.AcceptConnection();
+
+
         }
     }
 }

@@ -53,6 +53,11 @@ namespace Protocol
             }
         }
 
+        public Frame AcceptConnection()
+        {
+            Socket client = socket.Accept();
+        }
+
         public Frame ReceiveMessage()
         {
             var dataLength = ReceiveMessageLength();

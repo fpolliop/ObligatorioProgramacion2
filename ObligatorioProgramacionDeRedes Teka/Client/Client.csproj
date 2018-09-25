@@ -74,6 +74,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Controllers\Controllers.csproj">
+      <Project>{5498e461-3f18-4ed9-b836-76378f8aa759}</Project>
+      <Name>Controllers</Name>
+    </ProjectReference>
     <ProjectReference Include="..\DataManager\DataManager.csproj">
       <Project>{b500c6ce-e346-4f43-958c-fb4554405c33}</Project>
       <Name>DataManager</Name>

@@ -21,22 +21,25 @@ namespace Server
         private static UsersRepository lists;
         private static bool serverIsActive = true;
         private static bool socketIsClosed = false;
+        private static ServerController serverController;
 
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
             Console.Title = "Server";
             lists = new UsersRepository();
-            serverProtocol = new ServerProtocol();
-            Socket server = serverProtocol.StartServer();
+            //serverProtocol = new ServerProtocol();
+            //Socket server = serverProtocol.StartServer();
+            serverController.StartServer();
             try
             {
                 while (serverIsActive)
                 {
                     Console.WriteLine("Esperando conexion con el cliente...");
-                    Socket client = server.Accept();
-                    Thread thread = new Thread(() => ProcessClient(client));
+                    /*Socket client = server.Accept();
+                    */
+                    Frame frameReceived = serverController.HandleClient();
+                    Thread thread = new Thread(() => ProcessClient(frameReceived));
                     thread.Start();
-
                 }
             }
             catch
@@ -45,10 +48,40 @@ namespace Server
             }
         }
 
-        private static void ProcessClient(Socket client)
+        private static void ProcessClient(Frame frameReceived)
+        {
+            switch (frameReceived.Action)
+            {
+                case ActionType.ConnectToServer:
+                    string informationRecevived = Encoding.ASCII.GetString(frameReceived.Data, 0, frameReceived.DataLength);
+                    user = informationRecevived;
+
+                    string response = ServerController.Connect(frameReceived, lists.GetUsers());
+                    if (response.Equals("OK"))
+                    {
+                        AddUserInList(user);
+                        clientCount++;
+                    }
+                    byte[] data = Encoding.ASCII.GetBytes(response);
+                    Frame frame = new Frame(ActionType.ConnectToServer, data);
+                    FrameConnection.Send(client, frame);
+                    break;
+                case ActionType.ListConnectedUsers:
+                    ServerController.ListUsers(client, lists.GetUsers());
+                    break;
+                case ActionType.Exit:
+                    ServerController.Exit(client, user, lists);
+                    user = Encoding.ASCII.GetString(frameReceived.Data, 0, frameReceived.DataLength);
+                    RemoveUser(user);
+                    socketIsClosed = true;
+                    break;
+            }
+        }
+
+ /*       private static void ProcessClient(Socket client)
         {
             Console.WriteLine("Conectado el cliente " + clientCount);
-            Frame frameReceived = null;
+             = null;
             string user = "";
 
             while (!socketIsClosed)
@@ -106,7 +139,7 @@ namespace Server
             // serverController.HandleClientRequest(clientRequest);
            // client.Shutdown(SocketShutdown.Both);
             client.Close();
-        }
+        }*/
 
         private static void AddUserInList(string nickname)
         {

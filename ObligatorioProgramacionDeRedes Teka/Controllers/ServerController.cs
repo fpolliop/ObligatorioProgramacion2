@@ -13,6 +13,8 @@ namespace Controllers
 {
     public class ServerController
     {
+        private ServerProtocol serverProtocol;
+
         public static string Connect(Frame frame, List<User> users)
         {
             string receive = Encoding.ASCII.GetString(frame.Data, 0, frame.DataLength);
@@ -40,8 +42,18 @@ namespace Controllers
             }
 
             Frame frame = new Frame(ActionType.ListConnectedUsers, response);
-            serv
+            
             //FrameConnection.Send(frame);
+        }
+
+        public void StartServer()
+        {
+            serverProtocol.StartServer();
+        }
+
+        public Frame HandleClient()
+        {
+            return serverProtocol.ReceiveConnection();
         }
 
         public static void Exit(Socket socket, string user, UsersRepository lists)
