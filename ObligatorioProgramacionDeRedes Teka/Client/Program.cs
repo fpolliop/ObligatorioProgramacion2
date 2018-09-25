@@ -82,7 +82,7 @@ namespace Client
             }
         }
 
-        private static void Menu(Socket socket, string user)
+        private static void Menu(string user)
         {
             bool exit = false;
             while (!exit)
@@ -102,13 +102,13 @@ namespace Client
                 switch (action)
                 {
                     case ActionType.ListConnectedUsers:
-                        ClientController.ListConnectedUsers(socket);
+                        clientController.ListConnectedUsers();
                         Console.WriteLine("Presione enter para continuar.");
                         Console.ReadLine();
                         Console.Clear();
                         break;
                     case ActionType.Exit:
-                        ClientController.Exit(socket, user);
+                        clientController.Exit(user);
                         exit = true;
                         break;
                 }
