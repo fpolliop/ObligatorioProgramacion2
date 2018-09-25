@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Protocol
 {
-    class Connection
+    public class Connection
     {
         private const int DATA_LENGTH = 4;
         private Socket socket;
@@ -18,10 +18,10 @@ namespace Protocol
         }
 
 
-        public void SendMessage(string message)
+        public void SendMessage(Frame requestFrame)
         {
-            SendMessageLength(message);
-            var msgInBytes = Encoding.ASCII.GetBytes(message);
+            SendMessageLength(requestFrame.ToString());
+            var msgInBytes = Encoding.ASCII.GetBytes(requestFrame.ToString());
             var dataLength = msgInBytes.Length;
             var sent = 0;
             while (sent < dataLength)
@@ -42,7 +42,7 @@ namespace Protocol
             var dataLength = msgInBytes.Length;
             var dataLengthInBytes = BitConverter.GetBytes(dataLength);
             var sent = 0;
-            while (sent < 4)
+            while (sent < DATA_LENGTH)
             //while(sent < dataLength)
             {
                 var current = socket.Send(dataLengthInBytes, sent, 4 - sent, SocketFlags.None);
@@ -53,7 +53,7 @@ namespace Protocol
             }
         }
 
-        public string ReceiveMessage()
+        public Frame ReceiveMessage()
         {
             var dataLength = ReceiveMessageLength();
             var dataReceived = new byte[dataLength];
@@ -65,13 +65,14 @@ namespace Protocol
                 //if (pos == 0) throw new SocketException();
                 //received += pos;
             }
-            var message = Encoding.ASCII.GetString(dataReceived);
-            return message;
+            //var message = Encoding.ASCII.GetString(dataReceived);
+            Frame frameToReturn = new Frame(dataReceived);
+            return frameToReturn;
         }
 
         public void Close()
         {
-            socket.Shutdown(SocketShutdown.Both);
+            //socket.Shutdown(SocketShutdown.Both);
             socket.Close();
         }
 

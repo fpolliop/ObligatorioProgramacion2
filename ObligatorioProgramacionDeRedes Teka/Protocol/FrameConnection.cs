@@ -10,6 +10,7 @@ namespace Protocol
 {
     public class FrameConnection
     {
+        /*
         static int BUFFER_LENGTH = 100;
 
         public static void SendData(Socket socket, byte[] data)
@@ -133,5 +134,6 @@ namespace Protocol
             Array.Copy(data, index, result, 0, length);
             return result;
         }
+    */
     }
 }

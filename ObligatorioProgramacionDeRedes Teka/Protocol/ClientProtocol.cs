@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DataManager;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
@@ -15,8 +16,9 @@ namespace Protocol
         private int serverPort = Int32.Parse(ConfigurationSettings.AppSettings["ServerPort"].ToString());
         private string clientIp = ConfigurationSettings.AppSettings["ClientIp"].ToString();
         private string serverIp = ConfigurationSettings.AppSettings["ServerIp"].ToString();
-        
-        public Socket Connect()
+        private Connection connection;
+
+        public void Connect()
         {
             try
             {
@@ -25,30 +27,32 @@ namespace Protocol
                 IPEndPoint serverEndpoint = new IPEndPoint(IPAddress.Parse(serverIp), serverPort);
                 client.Bind(clientEndpoint);
                 client.Connect(serverEndpoint);
-                return client;
-                /*Connection connection = new Connection(client);
-
-                //hacerlo mejor onda automatico
-                connection.SendMessage("REQ|00|1123|conectarse al servidor");
-                connection.Close();
-                client.Close();*/
+                connection = new Connection(client);
+                Frame connectionRequestFrame = new Frame(ActionType.ConnectToServer, "");
+                
+                connection.SendMessage(connectionRequestFrame);
             }
             catch
             {
-                return null; // CAMBIAR ESTO
+                //??
             }
         }
 
-        public void SendRequestMessage(string encodedMessage)
+        public void Close()
         {
-            var client = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-           // client.Bind(clientEndpoint);
-           // client.Connect(serverEndpoint);
-            Connection connection = new Connection(client);
-
-            connection.SendMessage(encodedMessage);
             connection.Close();
-            client.Close();
+        }
+
+        public void Send(Frame frameToSend)
+        {
+            connection.SendMessage(frameToSend);
+        }
+
+        public Frame Receive()
+        {
+            Frame receivedFrame = connection.ReceiveMessage();
+            return receivedFrame;
+
         }
     }
 }

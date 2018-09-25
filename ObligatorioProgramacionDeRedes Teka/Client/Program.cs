@@ -12,39 +12,40 @@ namespace Client
 {
     public class Program
     {
-        //pancho
+        private static bool userIsLoggedIn = false;
+        private static bool errorOccurred = false;
+        private static string user = "";
+        private static ClientController clientController;
 
         public static void Main(string[] args)
         {
-            //teka
-            ClientController clientController = new ClientController();
-            //debeeria hablar con clientController. no con clientProtocol
+            clientController = new ClientController();
             Console.WriteLine("Conectando al servidor...");
-            Socket socket = clientController.Connect();
+            clientController.Connect();
+            
+            ConnectUser();
 
-            Frame frameRequest = null;
-            string user = "";
-            bool isLogged = false;
-            bool isFinished = false;
-
-            while (!isLogged && !isFinished)
+            if (userIsLoggedIn)
             {
-                while (user.Equals(""))
-                {
-                    Console.WriteLine("Ingrese su nickname:");
-                    user = Console.ReadLine().Trim();
-                    Console.Title = user;
-                }
-                string messageToSend = user;
-                byte[] userData = Encoding.ASCII.GetBytes(messageToSend);
-                frameRequest = new Frame(ActionType.ConnectToServer, userData);
-                FrameConnection.Send(socket, frameRequest);
-                Frame frameResponse = FrameConnection.Receive(socket);
+                Menu(user);
+            }
 
-                string isConnected = Encoding.ASCII.GetString(frameResponse.Data, 0, frameResponse.Data.Length);
-                if (isConnected.Equals("OK"))
+            clientController.Close();
+            Console.WriteLine("Gracias por jugar a SLASHER, presione enter para cerrar.");
+            Console.ReadLine();
+        }
+
+        private static void ConnectUser()
+        {
+            while (!userIsLoggedIn && !errorOccurred)
+            {
+                RequestNickname();
+
+                clientController.ConnectUser(user);
+                string connectionConfirmation = clientController.ReceiveConnectionConfirmation();
+                if (connectionConfirmation.Equals("OK"))
                 {
-                    isLogged = true;
+                    userIsLoggedIn = true;
                     Console.ForegroundColor = ConsoleColor.Green;
                     Console.WriteLine("Se ha conectado al servidor.");
                     Console.ForegroundColor = ConsoleColor.White;
@@ -52,13 +53,13 @@ namespace Client
                     Console.ReadLine();
                     Console.Clear();
                 }
-                else if (isConnected.Equals("EXCEEDED"))
+                else if (connectionConfirmation.Equals("EXCEEDED"))
                 {
                     Console.WriteLine("Suficientes usuarios conectados, intente más tarde.");
                     Console.ReadLine();
-                    isFinished = true;
+                    errorOccurred = true;
                 }
-                else if (isConnected.Equals("REPEAT"))
+                else if (connectionConfirmation.Equals("REPEAT"))
                 {
                     Console.WriteLine("Ya existe un jugador conectado con ese nickname.");
                     user = "";
@@ -66,17 +67,19 @@ namespace Client
                 else
                 {
                     Console.WriteLine("No se ha podido establecer conexión");
-                    isFinished = true;
+                    errorOccurred = true;
                 }
             }
-            if (isLogged)
+        }
+
+        private static void RequestNickname()
+        {
+            while (user.Equals(""))
             {
-                Menu(socket, user);
+                Console.WriteLine("Ingrese su nickname:");
+                user = Console.ReadLine().Trim();
+                Console.Title = user;
             }
-            socket.Shutdown(SocketShutdown.Both);
-            socket.Close();
-            Console.WriteLine("Gracias por jugar a SLASHER, presione enter para cerrar.");
-            Console.ReadLine();
         }
 
         private static void Menu(Socket socket, string user)

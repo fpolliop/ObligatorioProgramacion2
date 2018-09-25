@@ -39,8 +39,9 @@ namespace Controllers
                 }
             }
 
-            Frame frame = new Frame(ActionType.ListConnectedUsers, Encoding.ASCII.GetBytes(response));
-            FrameConnection.Send(socket, frame);
+            Frame frame = new Frame(ActionType.ListConnectedUsers, response);
+            serv
+            //FrameConnection.Send(frame);
         }
 
         public static void Exit(Socket socket, string user, UsersRepository lists)
