@@ -84,6 +84,18 @@ namespace Server
                         case ActionType.ListConnectedUsers:
                             ServerController.ListUsers(client, lists.GetUsers());
                             break;
+                        case ActionType.ListRegisteredUsers:
+                            break;
+                        case ActionType.JoinGame:
+                            break;
+                        case ActionType.JoinMatch:
+                            break;
+                        case ActionType.SelectRole:
+                            break;
+                        case ActionType.MovePlayer:
+                            break;
+                        case ActionType.AttackPlayer:
+                            break;
                         case ActionType.Exit:
                             ServerController.Exit(client, user, lists);
                             user = frameReceived.Data;

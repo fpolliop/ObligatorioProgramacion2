@@ -10,12 +10,13 @@ namespace DataManager
     {
         ConnectToServer = 0,
         ListConnectedUsers = 1,
-        JoinGame = 2,
-        JoinMatch = 3,
-        SelectRole = 4,
-        MovePlayer = 5,
-        AttackPlayer = 6,
-        Exit = 7
+        ListRegisteredUsers = 2,
+        JoinGame = 3,
+        JoinMatch = 4,
+        SelectRole = 5,
+        MovePlayer = 6,
+        AttackPlayer = 7,
+        Exit = 8
     }
 
     
