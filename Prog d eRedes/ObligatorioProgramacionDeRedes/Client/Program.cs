@@ -102,6 +102,18 @@ namespace Client
                         Console.ReadLine();
                         Console.Clear();
                         break;
+                    case ActionType.ListRegisteredUsers:
+                        break;
+                    case ActionType.JoinGame:
+                        break;
+                    case ActionType.JoinMatch:
+                        break;
+                    case ActionType.SelectRole:
+                        break;
+                    case ActionType.MovePlayer:
+                        break;
+                    case ActionType.AttackPlayer:
+                        break;
                     case ActionType.Exit:
                         ClientController.Exit(socket, user);
                         exit = true;
