@@ -16,16 +16,19 @@ namespace Game
         Player[,] board;
 
         Stopwatch gameTime = new Stopwatch();
-        public bool MatchHasFinished { get; set; }
+        public bool hasFinished{ get; set; }
+        public bool hasStarted;
 
         public SlasherMatch()
         {
             board = new Player[8, 8];
             round = 1;
+            hasStarted = false;
+            hasFinished = false;
         }
         public void StartMatch()
         {
-            MatchHasFinished = false;
+            hasStarted = true;
             gameTime.Start();
             Thread timerThread = new Thread(() => ControllTimer());
         }
@@ -42,7 +45,7 @@ namespace Game
 
         private void FinishMatch()
         {
-            MatchHasFinished = true;
+            hasFinished = true;
         }
 
         public void AddPlayer(Player newPlayer)

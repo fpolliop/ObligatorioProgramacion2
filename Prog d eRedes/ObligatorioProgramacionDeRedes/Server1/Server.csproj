@@ -82,6 +82,10 @@
       <Project>{B500C6CE-E346-4F43-958C-FB4554405C33}</Project>
       <Name>DataManager</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Game\Game.csproj">
+      <Project>{9b524e56-4450-4d84-966a-811b56698cc6}</Project>
+      <Name>Game</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Protocol\Protocol.csproj">
       <Project>{96bd542b-7db3-449c-8370-f48cf5c1575a}</Project>
       <Name>Protocol</Name>

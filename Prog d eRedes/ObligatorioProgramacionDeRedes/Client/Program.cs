@@ -13,6 +13,7 @@ namespace Client
     public class Program
     {
 
+        private static string userNickname = "";
         public static void Main(string[] args)
         {
             ClientController clientController = new ClientController();
@@ -21,19 +22,18 @@ namespace Client
             Socket socket = clientController.Connect();
 
             Frame frameRequest = null;
-            string user = "";
             bool isLogged = false;
             bool isFinished = false;
 
             while (!isLogged && !isFinished)
             {
-                while (user.Equals(""))
+                while (userNickname.Equals(""))
                 {
                     Console.WriteLine("Ingrese su nickname:");
-                    user = Console.ReadLine().Trim();
-                    Console.Title = user;
+                    userNickname = Console.ReadLine().Trim();
+                    Console.Title = userNickname;
                 }
-                string messageToSend = user;
+                string messageToSend = userNickname;
                 
                 frameRequest = new Frame(ActionType.ConnectToServer, messageToSend);
                 FrameConnection.Send(socket, frameRequest);
@@ -59,7 +59,7 @@ namespace Client
                 else if (isConnected.Equals("REPEAT"))
                 {
                     Console.WriteLine("Ya existe un jugador conectado con ese nickname.");
-                    user = "";
+                    userNickname = "";
                 }
                 else
                 {
@@ -69,7 +69,7 @@ namespace Client
             }
             if (isLogged)
             {
-                Menu(socket, user);
+                Menu(socket, userNickname);
             }
             socket.Shutdown(SocketShutdown.Both);
             socket.Close();
@@ -87,7 +87,7 @@ namespace Client
                 Console.WriteLine("1- Listar Usuarios Conectados");
                 Console.WriteLine("2- Listar Usuarios Registrados");
                 Console.WriteLine("3- ");
-                Console.WriteLine("4- ");
+                Console.WriteLine("4- Unirse a un Juego");
                 Console.WriteLine("5- ");
                 Console.WriteLine("6- ");
                 Console.WriteLine("7- Salir");
@@ -107,6 +107,11 @@ namespace Client
                     case ActionType.JoinGame:
                         break;
                     case ActionType.JoinMatch:
+                        Console.WriteLine("Seleccione su Rol:");
+                        Console.WriteLine("1 - Monstruo");
+                        Console.WriteLine("2 - Sobreviviente");
+                        int role = GetOption(0, 1) - 1;
+                        ClientController.JoinMatch(userNickname, role);
                         break;
                     case ActionType.SelectRole:
                         break;

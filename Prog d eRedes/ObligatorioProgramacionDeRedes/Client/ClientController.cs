@@ -41,6 +41,16 @@ namespace Client
             }
 
         }
+        public static void JoinMatch(Socket socket, string userNickname, int role)
+        {
+            Frame frameRequest = new Frame(ActionType.JoinMatch, userNickname, role);
+            FrameConnection.Send(socket, frameRequest);
+            Frame frameResponse = FrameConnection.Receive(socket);
+            if (frameResponse.Data.Equals("OK"))
+            {
+                Console.WriteLine("Se ha Unido a la partida");
+            }
+        }
 
         private static bool IsEmpty(string[] listFiles)
         {
@@ -67,12 +77,14 @@ namespace Client
             FrameConnection.Send(socket, frameRequest);
         }
 
-       /* public void CreatePlayer(string nickname)
-        {
-            string message = MessageDecoder.EncodeMessage(MessageDecoder.RequestMessage, ActionType.NewPlayer, nickname);
-            
-            clientProtocol.SendRequestMessage(message);
-        }*/
+        
+
+        /* public void CreatePlayer(string nickname)
+         {
+             string message = MessageDecoder.EncodeMessage(MessageDecoder.RequestMessage, ActionType.NewPlayer, nickname);
+
+             clientProtocol.SendRequestMessage(message);
+         }*/
     }
 }
 

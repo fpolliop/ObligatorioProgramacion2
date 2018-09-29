@@ -49,7 +49,7 @@ namespace Server
         {
             Console.WriteLine("Conectado el cliente " + clientCount);
             Frame frameReceived = null;
-            string user = "";
+            string userNickname = "";
 
             while (!socketIsClosed)
             {
@@ -65,16 +65,17 @@ namespace Server
 
                 try
                 {
+                    userNickname = frameReceived.GetUserNickname();
                     switch (frameReceived.Action)
                     {
+
                         case ActionType.ConnectToServer:
-                            string informationRecevived = frameReceived.Data;
-                            user = informationRecevived;
+                            
 
                             string response = ServerController.Connect(frameReceived, lists.GetUsers());
                             if (response.Equals("OK"))
                             {
-                                AddUserInList(user);
+                                AddUserInList(userNickname);
                                 clientCount++;
                             }
                             
@@ -86,20 +87,26 @@ namespace Server
                             break;
                         case ActionType.ListRegisteredUsers:
                             break;
-                        case ActionType.JoinGame:
-                            break;
+                        //case ActionType.JoinGame:
+                            
+                        //    break;
                         case ActionType.JoinMatch:
+                            User user = lists.GetUserByName(userNickname);
+                            Role role = frameReceived.GetUserRole();
+                            ServerController.JoinPlayerToMatch(client, user, role);
                             break;
-                        case ActionType.SelectRole:
-                            break;
+                        //case ActionType.SelectRole:
+                        //    string userNickname = frameReceived.GetUserNickname();
+                        //    ServerController.SelectPlayerRole(client, lists.GetUserByName(userNickname));
+                        //    break;
                         case ActionType.MovePlayer:
                             break;
                         case ActionType.AttackPlayer:
                             break;
                         case ActionType.Exit:
-                            ServerController.Exit(client, user, lists);
-                            user = frameReceived.Data;
-                            RemoveUser(user);
+                            ServerController.Exit(client, userNickname, lists);
+                            userNickname = frameReceived.Data;
+                            RemoveUser(userNickname);
                             socketIsClosed = true;
                             break;
                     }
@@ -108,8 +115,8 @@ namespace Server
                 {
                     Console.WriteLine("Ha sucedido un error inesperado");
 
-                    if (!user.Equals(""))
-                        RemoveUser(user);
+                    if (!userNickname.Equals(""))
+                        RemoveUser(userNickname);
 
                     socketIsClosed = true;
                 }
