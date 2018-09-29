@@ -50,6 +50,10 @@ namespace Client
             {
                 Console.WriteLine("Se ha Unido a la partida");
             }
+            else
+            {
+                Console.WriteLine(frameResponse.Data);
+            }
         }
 
         private static bool IsEmpty(string[] listFiles)

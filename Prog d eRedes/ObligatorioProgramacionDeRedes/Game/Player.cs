@@ -44,7 +44,17 @@ namespace Game
                 return 5;
             }
         }
+        public override bool Equals(Object obj)
+        {
+            var item = obj as Player;
+            if(item == null)
+            {
+                return false;
+            }
+            return this.Nickname == item.Nickname;
+        }
     }
+    
 }
 
 public enum Role

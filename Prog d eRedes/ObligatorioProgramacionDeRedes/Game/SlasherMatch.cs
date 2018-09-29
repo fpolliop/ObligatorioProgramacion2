@@ -25,6 +25,7 @@ namespace Game
             round = 1;
             hasStarted = false;
             hasFinished = false;
+            playersInMatch = new List<Player>();
         }
         public void StartMatch()
         {
@@ -50,6 +51,10 @@ namespace Game
 
         public void AddPlayer(Player newPlayer)
         {
+            if (playersInMatch.Contains(newPlayer))
+            {
+                throw new Exception("Error. El jugador ya se ha unido a la partida.");
+            }
             playersInMatch.Add(newPlayer);
 
             Random random = new Random();

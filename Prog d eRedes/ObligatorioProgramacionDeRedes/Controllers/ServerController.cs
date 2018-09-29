@@ -34,7 +34,7 @@ namespace Controllers
 
         public static SlasherMatch GetMatch()
         {
-            if (match != null)
+            if (match == null)
             {
                 match = new SlasherMatch();
             }
@@ -65,15 +65,22 @@ namespace Controllers
 
         public static void JoinPlayerToMatch(Socket socket, User user, Role role)
         {
-            Player newPlayer = new Player(user.Nickname, role);
-            match = GetMatch();
-            match.AddPlayer(newPlayer);
-            if (!match.hasStarted)
+            try
             {
-                match.StartMatch();
+                Player newPlayer = new Player(user.Nickname, role);
+                match = GetMatch();
+                match.AddPlayer(newPlayer);
+                if (!match.hasStarted)
+                {
+                    match.StartMatch();
+                }
+                Frame frame = new Frame(ActionType.JoinMatch, "OK");
+                FrameConnection.Send(socket, frame);
+            } catch (Exception ex)
+            {
+                Frame frame = new Frame(ActionType.JoinMatch, ex.Message);
+                FrameConnection.Send(socket, frame);
             }
-            Frame frame = new Frame(ActionType.JoinMatch, "OK");
-            FrameConnection.Send(socket, frame);
         }
     }
 }

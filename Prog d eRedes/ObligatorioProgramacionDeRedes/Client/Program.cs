@@ -98,9 +98,7 @@ namespace Client
                 {
                     case ActionType.ListConnectedUsers:
                         ClientController.ListConnectedUsers(socket);
-                        Console.WriteLine("Presione enter para continuar.");
-                        Console.ReadLine();
-                        Console.Clear();
+                        ClearConsole();
                         break;
                     case ActionType.ListRegisteredUsers:
                         break;
@@ -110,8 +108,9 @@ namespace Client
                         Console.WriteLine("Seleccione su Rol:");
                         Console.WriteLine("1 - Monstruo");
                         Console.WriteLine("2 - Sobreviviente");
-                        int role = GetOption(0, 1) - 1;
-                        ClientController.JoinMatch(userNickname, role);
+                        int role = GetOption(1, 2) - 1;
+                        ClientController.JoinMatch(socket, userNickname, role);
+                        ClearConsole();
                         break;
                     case ActionType.SelectRole:
                         break;
@@ -125,6 +124,13 @@ namespace Client
                         break;
                 }
             }
+        }
+
+        private static void ClearConsole()
+        {
+            Console.WriteLine("Presione enter para continuar.");
+            Console.ReadLine();
+            Console.Clear();
         }
 
         private static int GetOption(int start, int end)
