@@ -65,6 +65,7 @@ namespace Game
                 playerRow = random.Next(0, 7);
                 playerColumn = random.Next(0, 7);
             }
+            board[playerRow, playerColumn] = newPlayer;
             
         }
 
