@@ -81,7 +81,29 @@ namespace Client
             FrameConnection.Send(socket, frameRequest);
         }
 
-        
+        public static void ListRegisteredUsers(Socket socket)
+        {
+            Frame frameRequest = new Frame(ActionType.ListRegisteredUsers, "");
+            FrameConnection.Send(socket, frameRequest);
+            Frame frameResponse = FrameConnection.Receive(socket);
+            string[] listUsers = GetListFormatted(frameResponse.Data);
+            if (!IsEmpty(listUsers))
+            {
+                System.Console.WriteLine("Usuarios: ");
+                foreach (string user in listUsers)
+                {
+                    System.Console.WriteLine(user);
+                }
+            }
+            else
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                System.Console.WriteLine("No hay usuarios.");
+                Console.ForegroundColor = ConsoleColor.White;
+            }
+        }
+
+
 
         /* public void CreatePlayer(string nickname)
          {

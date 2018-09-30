@@ -26,7 +26,14 @@ namespace Controllers
             {
                 if (user != null && user.Equals(userAux))
                 {
-                    return "REPEAT";
+                    if (user.IsConnected)
+                    {
+                        return "REPEAT";
+                    }
+                    else
+                    {
+                        return "EXISTENT";
+                    } 
                 }
             }
             return "OK";
@@ -41,7 +48,22 @@ namespace Controllers
             return match;
         }
 
-        public static void ListUsers(Socket socket, List<User> users)
+        public static void ListConnectedUsers(Socket socket, List<User> users)
+        {
+            string response = "";
+            foreach (var user in users)
+            {
+                if (user != null && user.IsConnected == true)
+                {
+                    response += user.Nickname + ";";
+                }
+            }
+
+            Frame frame = new Frame(ActionType.ListConnectedUsers, response);
+            FrameConnection.Send(socket, frame);
+        }
+
+        public static void ListRegisteredUsers(Socket socket, List<User> users)
         {
             string response = "";
             foreach (var user in users)

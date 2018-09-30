@@ -23,9 +23,8 @@ namespace Client
 
             Frame frameRequest = null;
             bool isLogged = false;
-            bool isFinished = false;
 
-            while (!isLogged && !isFinished)
+            while (!isLogged )
             {
                 while (userNickname.Equals(""))
                 {
@@ -50,21 +49,25 @@ namespace Client
                     Console.ReadLine();
                     Console.Clear();
                 }
-                else if (isConnected.Equals("EXCEEDED"))
-                {
-                    Console.WriteLine("Suficientes usuarios conectados, intente más tarde.");
-                    Console.ReadLine();
-                    isFinished = true;
-                }
                 else if (isConnected.Equals("REPEAT"))
                 {
                     Console.WriteLine("Ya existe un jugador conectado con ese nickname.");
                     userNickname = "";
                 }
+                else if (isConnected.Equals("EXISTENT"))
+                {
+                    isLogged = true;
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.WriteLine("Se ha conectado al servidor.");
+                    Console.ForegroundColor = ConsoleColor.White;
+                    Console.WriteLine("Presione enter para continuar.");
+                    Console.ReadLine();
+                    Console.Clear();
+                }
                 else
                 {
                     Console.WriteLine("No se ha podido establecer conexión");
-                    isFinished = true;
+                    isLogged = true;
                 }
             }
             if (isLogged)
@@ -92,7 +95,7 @@ namespace Client
                 Console.WriteLine("6- ");
                 Console.WriteLine("7- Salir");
                 Console.WriteLine("Ingrese una opcion: ");
-                int option = GetOption(1, 7);
+                int option = GetOption(1, 8);
                 ActionType action = (ActionType)option;
                 switch (action)
                 {
@@ -101,6 +104,7 @@ namespace Client
                         ClearConsole();
                         break;
                     case ActionType.ListRegisteredUsers:
+                        ClientController.ListRegisteredUsers(socket);
                         break;
                     case ActionType.JoinGame:
                         break;

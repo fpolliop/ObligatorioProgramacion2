@@ -9,10 +9,12 @@ namespace Repository
     public class User
     {
         public string Nickname { get; set; }
+        public bool IsConnected { get; set; }
 
         public User(string nickname)
         {
             this.Nickname = nickname;
+            this.IsConnected = true;
         }
         public override bool Equals(Object obj)
         {

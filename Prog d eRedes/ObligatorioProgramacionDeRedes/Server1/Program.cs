@@ -1,6 +1,6 @@
 ﻿using Controllers;
 using DataManager;
-using ObligatorioProgramacionDeRedes;
+//using ObligatorioProgramacionDeRedes;
 using Protocol;
 using Repository;
 using System;
@@ -19,8 +19,8 @@ namespace Server
         private static ServerProtocol serverProtocol;
         private static int clientCount = 0;
         private static UsersRepository lists;
-        private static bool serverIsActive = true;
-        private static bool socketIsClosed = false;
+       // private static bool serverIsActive = true;
+       // private static bool socketIsClosed = false;
 
         static void Main(string[] args)
         {
@@ -28,6 +28,7 @@ namespace Server
             lists = new UsersRepository();
             serverProtocol = new ServerProtocol();
             Socket server = serverProtocol.StartServer();
+            bool serverIsActive = true;
             try
             {
                 while (serverIsActive)
@@ -50,6 +51,7 @@ namespace Server
             Console.WriteLine("Conectado el cliente " + clientCount);
             Frame frameReceived = null;
             string userNickname = "";
+            bool socketIsClosed = false;
 
             while (!socketIsClosed)
             {
@@ -65,12 +67,12 @@ namespace Server
 
                 try
                 {
-                    userNickname = frameReceived.GetUserNickname();
+                    
                     switch (frameReceived.Action)
                     {
 
                         case ActionType.ConnectToServer:
-                            
+                            userNickname = frameReceived.GetUserNickname();
 
                             string response = ServerController.Connect(frameReceived, lists.GetUsers());
                             if (response.Equals("OK"))
@@ -78,14 +80,20 @@ namespace Server
                                 AddUserInList(userNickname);
                                 clientCount++;
                             }
-                            
+                            else if (response.Equals("EXISTENT"))
+                            {
+                                ConnectUser(userNickname);
+                                clientCount++;
+                            }
+                  
                             Frame frame = new Frame(ActionType.ConnectToServer, response);
                             FrameConnection.Send(client, frame);
                             break;
                         case ActionType.ListConnectedUsers:
-                            ServerController.ListUsers(client, lists.GetUsers());
+                            ServerController.ListConnectedUsers(client, lists.GetUsers());
                             break;
                         case ActionType.ListRegisteredUsers:
+                            ServerController.ListRegisteredUsers(client, lists.GetUsers());
                             break;
                         //case ActionType.JoinGame:
                             
@@ -106,7 +114,7 @@ namespace Server
                         case ActionType.Exit:
                             ServerController.Exit(client, userNickname, lists);
                             userNickname = frameReceived.Data;
-                            RemoveUser(userNickname);
+                            DisconnectUser(userNickname);
                             socketIsClosed = true;
                             break;
                     }
@@ -116,7 +124,7 @@ namespace Server
                     Console.WriteLine("Ha sucedido un error inesperado");
 
                     if (!userNickname.Equals(""))
-                        RemoveUser(userNickname);
+                        DisconnectUser(userNickname);
 
                     socketIsClosed = true;
                 }
@@ -128,19 +136,29 @@ namespace Server
             client.Close();
         }
 
+        private static void ConnectUser(string nickname)
+        {
+            User user = lists.GetUserByName(nickname);
+            if (user != null)
+            {
+                user.IsConnected = true;
+
+            }
+        }
+
         private static void AddUserInList(string nickname)
         {
             User user = new User(nickname);
             lists.AddUser(user);
         }
 
-        private static void RemoveUser(string nickname)
+        private static void DisconnectUser(string nickname)
         {
             User user = lists.GetUserByName(nickname);
             if (user != null)
             {
-                lists.RemoveUser(user);
-                clientCount--;
+                user.IsConnected = false;
+                
             }
             else
             {
