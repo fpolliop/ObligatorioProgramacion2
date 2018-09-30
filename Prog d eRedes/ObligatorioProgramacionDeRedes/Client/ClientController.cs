@@ -27,7 +27,7 @@ namespace Client
             string[] listUsers = GetListFormatted(frameResponse.Data);
             if (!IsEmpty(listUsers))
             {
-                System.Console.WriteLine("Usuarios: ");
+                System.Console.WriteLine("Usuarios Conectados: ");
                 foreach (string user in listUsers)
                 {
                     System.Console.WriteLine(user);
@@ -36,7 +36,7 @@ namespace Client
             else
             {
                 Console.ForegroundColor = ConsoleColor.Red;
-                System.Console.WriteLine("No hay usuarios.");
+                System.Console.WriteLine("No hay usuarios conectados");
                 Console.ForegroundColor = ConsoleColor.White;
             }
 
@@ -89,7 +89,7 @@ namespace Client
             string[] listUsers = GetListFormatted(frameResponse.Data);
             if (!IsEmpty(listUsers))
             {
-                System.Console.WriteLine("Usuarios: ");
+                System.Console.WriteLine("Usuarios Registrados: ");
                 foreach (string user in listUsers)
                 {
                     System.Console.WriteLine(user);
@@ -98,7 +98,7 @@ namespace Client
             else
             {
                 Console.ForegroundColor = ConsoleColor.Red;
-                System.Console.WriteLine("No hay usuarios.");
+                System.Console.WriteLine("No hay usuarios registrados");
                 Console.ForegroundColor = ConsoleColor.White;
             }
         }

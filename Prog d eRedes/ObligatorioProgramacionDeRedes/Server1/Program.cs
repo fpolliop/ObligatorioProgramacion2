@@ -142,7 +142,6 @@ namespace Server
             if (user != null)
             {
                 user.IsConnected = true;
-
             }
         }
 

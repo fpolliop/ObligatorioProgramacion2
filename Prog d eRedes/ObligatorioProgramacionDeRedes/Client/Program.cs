@@ -105,6 +105,7 @@ namespace Client
                         break;
                     case ActionType.ListRegisteredUsers:
                         ClientController.ListRegisteredUsers(socket);
+                        ClearConsole();
                         break;
                     case ActionType.JoinGame:
                         break;
