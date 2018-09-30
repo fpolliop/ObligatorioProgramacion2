@@ -37,7 +37,6 @@ namespace Server
                     Socket client = server.Accept();
                     Thread thread = new Thread(() => ProcessClient(client));
                     thread.Start();
-
                 }
             }
             catch
@@ -48,7 +47,7 @@ namespace Server
 
         private static void ProcessClient(Socket client)
         {
-            Console.WriteLine("Conectado el cliente " + clientCount);
+            //Console.WriteLine("Conectado el cliente " + clientCount);
             Frame frameReceived = null;
             string userNickname = "";
             bool socketIsClosed = false;
@@ -79,11 +78,17 @@ namespace Server
                             {
                                 AddUserInList(userNickname);
                                 clientCount++;
+                                Console.ForegroundColor = ConsoleColor.Green;
+                                Console.WriteLine("Conectado el cliente: " + userNickname);
+                                Console.ForegroundColor = ConsoleColor.White;
                             }
                             else if (response.Equals("EXISTENT"))
                             {
                                 ConnectUser(userNickname);
                                 clientCount++;
+                                Console.ForegroundColor = ConsoleColor.Green;
+                                Console.WriteLine("Conectado el cliente: " + userNickname);
+                                Console.ForegroundColor = ConsoleColor.White;
                             }
                   
                             Frame frame = new Frame(ActionType.ConnectToServer, response);
@@ -115,6 +120,9 @@ namespace Server
                             ServerController.Exit(client, userNickname, lists);
                             userNickname = frameReceived.Data;
                             DisconnectUser(userNickname);
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.WriteLine("Desconectado el cliente: " + userNickname);
+                            Console.ForegroundColor = ConsoleColor.White;
                             socketIsClosed = true;
                             break;
                     }
@@ -124,7 +132,12 @@ namespace Server
                     Console.WriteLine("Ha sucedido un error inesperado");
 
                     if (!userNickname.Equals(""))
+                    {
                         DisconnectUser(userNickname);
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine("Desconectado el cliente: " + userNickname);
+                        Console.ForegroundColor = ConsoleColor.White;
+                    }
 
                     socketIsClosed = true;
                 }
