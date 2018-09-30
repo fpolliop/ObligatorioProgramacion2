@@ -89,13 +89,10 @@ namespace Client
                 Console.WriteLine("*-*-*-*-*-*-*-*-*" + user + " Menu:*-*-*-*-*-*-*-*-*");
                 Console.WriteLine("1- Listar Usuarios Conectados");
                 Console.WriteLine("2- Listar Usuarios Registrados");
-                Console.WriteLine("3- ");
-                Console.WriteLine("4- Unirse a un Juego");
-                Console.WriteLine("5- ");
-                Console.WriteLine("6- ");
-                Console.WriteLine("7- Salir");
+                Console.WriteLine("3- Unirse a una Partida");
+                Console.WriteLine("4- Salir");
                 Console.WriteLine("Ingrese una opcion: ");
-                int option = GetOption(1, 8);
+                int option = GetOption(1, 4);
                 ActionType action = (ActionType)option;
                 switch (action)
                 {
@@ -106,8 +103,6 @@ namespace Client
                     case ActionType.ListRegisteredUsers:
                         ClientController.ListRegisteredUsers(socket);
                         ClearConsole();
-                        break;
-                    case ActionType.JoinGame:
                         break;
                     case ActionType.JoinMatch:
                         Console.WriteLine("Seleccione su Rol:");
