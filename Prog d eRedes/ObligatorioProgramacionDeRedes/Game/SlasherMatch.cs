@@ -55,7 +55,7 @@ namespace Game
         {
             if (playersInMatch.Contains(newPlayer))
             {
-                throw new Exception("Error. El jugador ya se ha unido a la partida.");
+                throw new Exception("Error. El jugador ya ha muerto en la partida activa. Espere a que comienze una nueva partida");
             }
             playersInMatch.Add(newPlayer);
 
@@ -78,6 +78,9 @@ namespace Game
                 if (player.Movements < 2)
                 {
                     Tuple<int,int> actualPosition = GetPlayerPosition(player);
+                    if (actualPosition == null) {
+                        throw new Exception("Estas muerto");
+                    }
                     CheckInBounds(actualPosition, gameAction);
                     CheckFreeSpace(actualPosition, gameAction);
                     PlayerMovement(actualPosition, gameAction, player);
@@ -141,7 +144,7 @@ namespace Game
             bool turnIsFinished = true;
             foreach (Player player in playersInMatch)
             {
-                if (player.Movements < 2)
+                if (player.Movements < 2 && !player.IsDead)
                 {
                     turnIsFinished = false;
                 }            
@@ -252,6 +255,10 @@ namespace Game
                 if (player.Movements < 2)
                 {
                     Tuple<int, int> actualPosition = GetPlayerPosition(player);
+                    if (actualPosition == null)
+                    {
+                        throw new Exception("Estas muerto");
+                    }
                     CheckAttackInBounds(actualPosition, gameAction);
                     CheckAttackNotEmptySpace(actualPosition, gameAction);
                     Attack(actualPosition, gameAction, player);
@@ -321,7 +328,6 @@ namespace Game
             if (playerAttacked.Health <= 0)
             {
                 RemovePlayerFromActiveMatch(playerAttacked);
-                //playerAttacked.IsAlive = false;
             }
         }
 
@@ -329,8 +335,8 @@ namespace Game
         {
             Tuple<int, int> position = GetPlayerPosition(playerAttacked);
             board[position.Item1, position.Item2] = null;
-            playersInMatch.Remove(playerAttacked);
-            //hacer algo mas?
+            playerAttacked.Movements = 0;
+            playerAttacked.IsDead = true;
         }
 
         private Player GetPlayerByPosition(Tuple<int, int> attackedPosition)

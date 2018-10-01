@@ -18,6 +18,7 @@ namespace Game
         public Role Role { get; set; }
         public int Health { get; set; }
         public int Movements { get; set; }
+        public bool IsDead { get; set; }
 
         public Player(string nickname, Role role)
         {
@@ -31,6 +32,7 @@ namespace Game
             {
                 this.Health = SurvivorHealth;
             }
+            IsDead = false;
             Movements = 0;
         }
 

@@ -62,8 +62,14 @@ namespace Client
         {
             Frame frameRequest = new Frame(ActionType.MovePlayer, userNickname, movementDirection);
             FrameConnection.Send(socket, frameRequest);
-            Frame frameResponse = FrameConnection.Receive(socket);      
-            Console.WriteLine(frameResponse.Data);    
+            Frame frameResponse = FrameConnection.Receive(socket);
+            if (frameResponse.Data.Equals("Estas muerto"))
+            {
+                isInActiveMatch = false;
+                Console.WriteLine("Estas muerto");
+            }
+            else
+                Console.WriteLine(frameResponse.Data);    
         }
 
         public static void AttackPlayer(Socket socket, string userNickname, int attackDirection)
