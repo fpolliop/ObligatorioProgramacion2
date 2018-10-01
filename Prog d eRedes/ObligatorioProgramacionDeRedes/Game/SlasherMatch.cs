@@ -84,6 +84,7 @@ namespace Game
                     CheckInBounds(actualPosition, gameAction);
                     CheckFreeSpace(actualPosition, gameAction);
                     PlayerMovement(actualPosition, gameAction, player);
+                    CheckMatchHasFinished();
                     Tuple<int, int> newPosition = GetPlayerPosition(player);
                     string nearPlayers = GetNearPlayers(newPosition);
                     return nearPlayers;
@@ -93,6 +94,68 @@ namespace Game
                     throw new Exception("No tiene mas moviminetos, espere as que termine el turno actual");
                 }
             }
+        }
+
+        private void CheckMatchHasFinished()
+        {
+            if (!JustSurvivorsInGame())
+            {
+                if (JustSurvivorsLeft())
+                {
+                    FinishMatch();
+                    throw new Exception("Partida terminada, han ganado los sobrevivientes");
+                }
+                else if(OneMonsterLeft())
+                {
+                    FinishMatch();
+                    throw new Exception("Partida terminada, ha ganado el monstruo");
+                }     
+            }
+        }
+
+        private bool JustSurvivorsInGame()
+        {
+            bool justSurvivors = true;
+            foreach (Player player in playersInMatch)
+            {
+                if (player.Role == Role.Monster)
+                {
+                    justSurvivors = false;
+                }
+            }
+            if (playersInMatch.Count > 1)
+            {
+                return justSurvivors;
+            }
+            else
+                return true;
+        }
+
+        private bool JustSurvivorsLeft()
+        {
+            bool justSurvivorsLeft = true;
+            foreach (Player player in playersInMatch)
+            {
+                if (player.Role == Role.Monster && !player.IsDead)
+                    justSurvivorsLeft = false;
+            }
+            return justSurvivorsLeft;
+        }
+
+        private bool OneMonsterLeft()
+        {
+            bool oneMonsterLeft = true;
+            int countMonsters = 0;
+            foreach (Player player in playersInMatch)
+            {
+                if (player.Role == Role.Survivor && !player.IsDead)
+                    oneMonsterLeft = false;
+                else if (player.Role == Role.Monster && !player.IsDead)
+                    countMonsters = countMonsters + 1;
+            }
+            if (countMonsters > 1)
+                oneMonsterLeft = false;
+            return oneMonsterLeft;
         }
 
         private string GetNearPlayers(Tuple<int,int> newPosition)

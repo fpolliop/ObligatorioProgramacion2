@@ -66,7 +66,12 @@ namespace Client
             if (frameResponse.Data.Equals("Estas muerto"))
             {
                 isInActiveMatch = false;
-                Console.WriteLine("Estas muerto");
+                Console.WriteLine(frameResponse.Data);
+            }
+            else if (frameResponse.Data.Contains("Partida terminada"))
+            {
+                isInActiveMatch = false;
+                Console.WriteLine(frameResponse.Data);
             }
             else
                 Console.WriteLine(frameResponse.Data);    
@@ -77,7 +82,18 @@ namespace Client
             Frame frameRequest = new Frame(ActionType.AttackPlayer, userNickname, attackDirection);
             FrameConnection.Send(socket, frameRequest);
             Frame frameResponse = FrameConnection.Receive(socket);
-            Console.WriteLine(frameResponse.Data);
+            if (frameResponse.Data.Equals("Estas muerto"))
+            {
+                isInActiveMatch = false;
+                Console.WriteLine(frameResponse.Data);
+            }
+            else if (frameResponse.Data.Contains("Partida terminada"))
+            {
+                isInActiveMatch = false;
+                Console.WriteLine(frameResponse.Data);
+            }
+            else
+                Console.WriteLine(frameResponse.Data);
         }
 
         private static bool IsEmpty(string[] listFiles)
