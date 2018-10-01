@@ -31,6 +31,7 @@ namespace Game
             {
                 this.Health = SurvivorHealth;
             }
+            Movements = 0;
         }
 
         public int GetPowerAttack()
@@ -44,14 +45,19 @@ namespace Game
                 return 5;
             }
         }
-        public override bool Equals(Object obj)
+
+        public override bool Equals(object obj)
         {
-            var item = obj as Player;
-            if(item == null)
+            if (obj == null || GetType() != obj.GetType())
             {
                 return false;
             }
-            return this.Nickname == item.Nickname;
+            string objNickname = ((Player)obj).Nickname;
+            if (objNickname != null && Nickname != null)
+            {
+                return ((Player)obj).Nickname.ToUpper().Equals(Nickname.ToUpper());
+            }
+            return false;
         }
     }
     

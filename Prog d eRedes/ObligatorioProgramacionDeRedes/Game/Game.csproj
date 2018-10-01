@@ -44,5 +44,11 @@
     <Compile Include="Player.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Repository\Repository.csproj">
+      <Project>{ab5c3dec-b43b-455a-8f57-5f7312c352cd}</Project>
+      <Name>Repository</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

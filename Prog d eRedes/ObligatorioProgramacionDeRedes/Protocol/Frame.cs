@@ -87,5 +87,11 @@ namespace Protocol
             return playerRole;
 
         }
+
+        public PlayerGameAction GetPlayerGameAction()
+        {
+            Enum.TryParse(this.Data.Split(dataSeparator)[ROLE_POSITION], out PlayerGameAction playerGameAction);
+            return playerGameAction;
+        }  
     }
 }

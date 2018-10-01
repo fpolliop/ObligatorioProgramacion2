@@ -12,6 +12,7 @@ namespace Client
     public class ClientController
     {
         ClientProtocol clientProtocol;
+        public static bool isInActiveMatch = false;
 
         public Socket Connect()
         {
@@ -48,12 +49,21 @@ namespace Client
             Frame frameResponse = FrameConnection.Receive(socket);
             if (frameResponse.Data.Equals("OK"))
             {
+                isInActiveMatch = true;
                 Console.WriteLine("Se ha Unido a la partida");
             }
             else
             {
                 Console.WriteLine(frameResponse.Data);
             }
+        }
+
+        public static void MovePlayer(Socket socket, string userNickname, int movementDirection)
+        {
+            Frame frameRequest = new Frame(ActionType.MovePlayer, userNickname, movementDirection);
+            FrameConnection.Send(socket, frameRequest);
+            Frame frameResponse = FrameConnection.Receive(socket);      
+            Console.WriteLine(frameResponse.Data);    
         }
 
         private static bool IsEmpty(string[] listFiles)

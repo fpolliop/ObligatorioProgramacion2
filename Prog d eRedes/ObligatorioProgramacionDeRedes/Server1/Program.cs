@@ -57,7 +57,7 @@ namespace Server
                 try
                 {
                     frameReceived = FrameConnection.Receive(client);
-                    
+                    userNickname = frameReceived.GetUserNickname();
                 }
                 catch (SocketException e)
                 {
@@ -71,7 +71,7 @@ namespace Server
                     {
 
                         case ActionType.ConnectToServer:
-                            userNickname = frameReceived.GetUserNickname();
+                            
 
                             string response = ServerController.Connect(frameReceived, lists.GetUsers());
                             if (response.Equals("OK"))
@@ -100,19 +100,15 @@ namespace Server
                         case ActionType.ListRegisteredUsers:
                             ServerController.ListRegisteredUsers(client, lists.GetUsers());
                             break;
-                        //case ActionType.JoinGame:
-                            
-                        //    break;
                         case ActionType.JoinMatch:
                             User user = lists.GetUserByName(userNickname);
                             Role role = frameReceived.GetUserRole();
                             ServerController.JoinPlayerToMatch(client, user, role);
                             break;
-                        //case ActionType.SelectRole:
-                        //    string userNickname = frameReceived.GetUserNickname();
-                        //    ServerController.SelectPlayerRole(client, lists.GetUserByName(userNickname));
-                        //    break;
                         case ActionType.MovePlayer:
+                            User player = lists.GetUserByName(userNickname);
+                            PlayerGameAction gameAction = frameReceived.GetPlayerGameAction();
+                            ServerController.MovePlayer(client, player, gameAction);
                             break;
                         case ActionType.AttackPlayer:
                             break;

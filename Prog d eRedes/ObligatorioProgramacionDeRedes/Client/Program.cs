@@ -24,7 +24,7 @@ namespace Client
             Frame frameRequest = null;
             bool isLogged = false;
 
-            while (!isLogged )
+            while (!isLogged)
             {
                 while (userNickname.Equals(""))
                 {
@@ -33,7 +33,7 @@ namespace Client
                     Console.Title = userNickname;
                 }
                 string messageToSend = userNickname;
-                
+
                 frameRequest = new Frame(ActionType.ConnectToServer, messageToSend);
                 FrameConnection.Send(socket, frameRequest);
                 Frame frameResponse = FrameConnection.Receive(socket);
@@ -109,7 +109,11 @@ namespace Client
                         Console.WriteLine("1 - Monstruo");
                         Console.WriteLine("2 - Sobreviviente");
                         int role = GetOption(1, 2) - 1;
-                        ClientController.JoinMatch(socket, userNickname, role);
+                        ClientController.JoinMatch(socket, user, role);
+                        while (ClientController.isInActiveMatch)
+                        {
+                            inGameMenu( socket,  user);
+                        }
                         ClearConsole();
                         break;
                     case ActionType.SelectRole:
@@ -156,6 +160,35 @@ namespace Client
                 }
             }
             return option;
+        }
+
+        private static void inGameMenu(Socket socket, string user)
+        {
+            ClearConsole();
+            Console.WriteLine("*-*-*-*-*-*-*-*-*" + user + " Menu Partida:*-*-*-*-*-*-*-*-*");
+            Console.WriteLine("1- Mover");
+            Console.WriteLine("2- Atacar");
+            Console.WriteLine("Ingrese una opcion: ");
+            int option = GetOption(1, 2) + 5;
+            ActionType action = (ActionType)option;
+            switch (action)
+            {
+                case ActionType.MovePlayer:
+                    Console.WriteLine("Seleccione la direccion del movimiento:");
+                    Console.WriteLine("1 - Arriba");
+                    Console.WriteLine("2 - Derecha");
+                    Console.WriteLine("3 - Abajo");
+                    Console.WriteLine("4 - Izquierda");
+
+                    int movementDirection = GetOption(1, 4) - 1;
+                    ClientController.MovePlayer(socket, user, movementDirection);
+                    //ClearConsole();
+                    break;
+                case ActionType.AttackPlayer:
+                    //CLientContrller
+                    //ClearConsole();
+                    break;
+            }
         }
         /*if (clientController.Connect())
         {
