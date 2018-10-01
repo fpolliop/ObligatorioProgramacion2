@@ -8,10 +8,10 @@ namespace Game
 {
     public class Player
     {
-        private readonly int MonsterPowerAttack = 10;
-        private readonly int SurvivorPowerAttack = 5;
-        private readonly int MonsterHealth = 100;
-        private readonly int SurvivorHealth = 20;
+        public readonly int MonsterPowerAttack = 10;
+        public readonly int SurvivorPowerAttack = 5;
+        public readonly int MonsterHealth = 100;
+        public readonly int SurvivorHealth = 20;
 
         public string Nickname { get; set; }
         public string Avatar { get; set; }

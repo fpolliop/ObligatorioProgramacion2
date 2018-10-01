@@ -111,6 +111,9 @@ namespace Server
                             ServerController.MovePlayer(client, player, gameAction);
                             break;
                         case ActionType.AttackPlayer:
+                            User attacker = lists.GetUserByName(userNickname);
+                            PlayerGameAction action = frameReceived.GetPlayerGameAction();
+                            ServerController.AttackPlayer(client, attacker, action);
                             break;
                         case ActionType.Exit:
                             ServerController.Exit(client, userNickname, lists);

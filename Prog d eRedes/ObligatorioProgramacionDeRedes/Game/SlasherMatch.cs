@@ -94,25 +94,29 @@ namespace Game
 
         private string GetNearPlayers(Tuple<int,int> newPosition)
         {
-            string nearPlayers = "Coordenadas jugador: " + newPosition.Item1 + "," + newPosition.Item2 + " ------ Jugadores cercanos: ";
+            string nearPlayers = "Coordenadas jugador: " + newPosition.Item1 + "," + newPosition.Item2 + " ------ Jugadores proximos: ";
             if (newPosition.Item1 != 0 && board[newPosition.Item1 - 1, newPosition.Item2] != null)
             {
                 Player nearPlayer = board[newPosition.Item1 - 1, newPosition.Item2];
+                nearPlayers += "(Arriba) ";
                 nearPlayers = CheckRole(nearPlayers, nearPlayer);
             }
             if (newPosition.Item2 != 7 && board[newPosition.Item1, newPosition.Item2 + 1] != null)
             {
                 Player nearPlayer = board[newPosition.Item1 , newPosition.Item2 + 1];
+                nearPlayers += "(Derecha) ";
                 nearPlayers = CheckRole(nearPlayers, nearPlayer);
             }
             if (newPosition.Item1 != 7 && board[newPosition.Item1 + 1, newPosition.Item2] != null)
             {
                 Player nearPlayer = board[newPosition.Item1 + 1, newPosition.Item2];
+                nearPlayers += "(Abajo) ";
                 nearPlayers = CheckRole(nearPlayers, nearPlayer);
             }
             if (newPosition.Item2 != 0 && board[newPosition.Item1, newPosition.Item2 - 1] != null)
             {
                 Player nearPlayer = board[newPosition.Item1, newPosition.Item2 - 1];
+                nearPlayers += "(Izquierda) ";
                 nearPlayers = CheckRole(nearPlayers, nearPlayer);
             }
             return nearPlayers;
@@ -237,6 +241,162 @@ namespace Game
                 if (board[actualPosition.Item1, actualPosition.Item2 - 1] != null)
                 {
                     throw new Exception("Hay otro jugador ocupando esa posicion");
+                }
+            }
+        }
+
+        public string AttackPlayer(Player player, PlayerGameAction gameAction)
+        {
+            lock (lockBoard)
+            {
+                if (player.Movements < 2)
+                {
+                    Tuple<int, int> actualPosition = GetPlayerPosition(player);
+                    CheckAttackInBounds(actualPosition, gameAction);
+                    CheckAttackNotEmptySpace(actualPosition, gameAction);
+                    Attack(actualPosition, gameAction, player);
+                    
+                    string nearPlayers = GetNearPlayers(actualPosition);
+                    return nearPlayers;
+                }
+                else
+                {
+                    throw new Exception("No tiene mas movimientos, espere as que termine el turno actual");
+                }
+            }
+        }
+
+        private void Attack(Tuple<int, int> actualPosition, PlayerGameAction gameAction, Player player)
+        {
+            if (gameAction.Equals(PlayerGameAction.AttackUp))
+            {
+                Tuple<int, int> positionAttacked = new Tuple<int, int>(actualPosition.Item1 - 1, actualPosition.Item2);
+                Player playerAttacked = GetPlayerByPosition(positionAttacked);
+                ExecuteAttack(player, playerAttacked);
+            }
+            else if (gameAction.Equals(PlayerGameAction.AttackRight))
+            {
+                Tuple<int, int> positionAttacked = new Tuple<int, int>(actualPosition.Item1, actualPosition.Item2 + 1);
+                Player playerAttacked = GetPlayerByPosition(positionAttacked);
+                ExecuteAttack(player, playerAttacked);
+            }
+            else if (gameAction.Equals(PlayerGameAction.AttackDown))
+            {
+                Tuple<int, int> positionAttacked = new Tuple<int, int>(actualPosition.Item1 + 1, actualPosition.Item2);
+                Player playerAttacked = GetPlayerByPosition(positionAttacked);
+                ExecuteAttack(player, playerAttacked);
+            }
+            else if (gameAction.Equals(PlayerGameAction.AttackLeft))
+            {
+                Tuple<int, int> positionAttacked = new Tuple<int, int>(actualPosition.Item1, actualPosition.Item2 -1);
+                Player playerAttacked = GetPlayerByPosition(positionAttacked);
+                ExecuteAttack(player, playerAttacked);
+            }
+            player.Movements = player.Movements + 1;
+            CheckTurns();
+        }
+
+        private void ExecuteAttack(Player player, Player playerAttacked)
+        {
+            if (player.Role == Role.Survivor)
+            {
+                if (playerAttacked.Role == Role.Monster)
+                {
+                    SubstractHealthFromPlayer(playerAttacked, player.SurvivorPowerAttack);
+                }
+                else
+                {
+                    throw new Exception("Los sobrevivientes no pueden atacarse entre ellos");
+                }
+            }
+            else if (player.Role == Role.Monster)
+            {
+                SubstractHealthFromPlayer(playerAttacked, player.MonsterPowerAttack);
+            }
+        }
+
+        private void SubstractHealthFromPlayer(Player playerAttacked, int attackPower)
+        {
+            playerAttacked.Health = playerAttacked.Health - attackPower;
+            if (playerAttacked.Health <= 0)
+            {
+                RemovePlayerFromActiveMatch(playerAttacked);
+                //playerAttacked.IsAlive = false;
+            }
+        }
+
+        private void RemovePlayerFromActiveMatch(Player playerAttacked)
+        {
+            Tuple<int, int> position = GetPlayerPosition(playerAttacked);
+            board[position.Item1, position.Item2] = null;
+            //hacer algo mas?
+        }
+
+        private Player GetPlayerByPosition(Tuple<int, int> attackedPosition)
+        {
+            return board[attackedPosition.Item1, attackedPosition.Item2];
+        }
+
+        private void CheckAttackInBounds(Tuple<int, int> actualPosition, PlayerGameAction gameAction)
+        {
+            if (gameAction.Equals(PlayerGameAction.AttackUp))
+            {
+                if (actualPosition.Item1 == 0)
+                {
+                    throw new Exception("No se puede atacar fuera de los limites del tablero");
+                }
+            }
+            else if (gameAction.Equals(PlayerGameAction.AttackRight))
+            {
+                if (actualPosition.Item2 == 7)
+                {
+                    throw new Exception("No se puede atacar fuera de los limites del tablero");
+                }
+            }
+            else if (gameAction.Equals(PlayerGameAction.AttackDown))
+            {
+                if (actualPosition.Item1 == 7)
+                {
+                    throw new Exception("No se puede atacar fuera de los limites del tablero");
+                }
+            }
+            else if (gameAction.Equals(PlayerGameAction.AttackLeft))
+            {
+                if (actualPosition.Item2 == 0)
+                {
+                    throw new Exception("No se puede atacar fuera de los limites del tablero");
+                }
+            }
+        }
+
+        private void CheckAttackNotEmptySpace(Tuple<int, int> actualPosition, PlayerGameAction gameAction)
+        {
+            if (gameAction.Equals(PlayerGameAction.AttackUp))
+            {
+                if (board[actualPosition.Item1 - 1, actualPosition.Item2] == null)
+                {
+                    throw new Exception("No hay ningun jugador en la posicion atacada");
+                }
+            }
+            else if (gameAction.Equals(PlayerGameAction.AttackRight))
+            {
+                if (board[actualPosition.Item1, actualPosition.Item2 + 1] == null)
+                {
+                    throw new Exception("No hay ningun jugador en la posicion atacada");
+                }
+            }
+            else if (gameAction.Equals(PlayerGameAction.AttackDown))
+            {
+                if (board[actualPosition.Item1 + 1, actualPosition.Item2] == null)
+                {
+                    throw new Exception("No hay ningun jugador en la posicion atacada");
+                }
+            }
+            else if (gameAction.Equals(PlayerGameAction.AttackLeft))
+            {
+                if (board[actualPosition.Item1, actualPosition.Item2 - 1] == null)
+                {
+                    throw new Exception("No hay ningun jugador en la posicion atacada");
                 }
             }
         }

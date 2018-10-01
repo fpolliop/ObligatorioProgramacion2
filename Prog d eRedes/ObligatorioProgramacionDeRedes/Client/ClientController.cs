@@ -66,6 +66,14 @@ namespace Client
             Console.WriteLine(frameResponse.Data);    
         }
 
+        public static void AttackPlayer(Socket socket, string userNickname, int attackDirection)
+        {
+            Frame frameRequest = new Frame(ActionType.AttackPlayer, userNickname, attackDirection);
+            FrameConnection.Send(socket, frameRequest);
+            Frame frameResponse = FrameConnection.Receive(socket);
+            Console.WriteLine(frameResponse.Data);
+        }
+
         private static bool IsEmpty(string[] listFiles)
         {
             return listFiles == null || listFiles.Length == 0;

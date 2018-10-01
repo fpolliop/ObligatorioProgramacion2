@@ -182,11 +182,15 @@ namespace Client
 
                     int movementDirection = GetOption(1, 4) - 1;
                     ClientController.MovePlayer(socket, user, movementDirection);
-                    //ClearConsole();
                     break;
                 case ActionType.AttackPlayer:
-                    //CLientContrller
-                    //ClearConsole();
+                    Console.WriteLine("Seleccione la direccion del ataque:");
+                    Console.WriteLine("1 - Arriba");
+                    Console.WriteLine("2 - Derecha");
+                    Console.WriteLine("3 - Abajo");
+                    Console.WriteLine("4 - Izquierda");
+                    int attackDirection = GetOption(1, 4) + 3;
+                    ClientController.AttackPlayer(socket, user, attackDirection);
                     break;
             }
         }

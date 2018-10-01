@@ -113,12 +113,30 @@ namespace Controllers
                 match = GetMatch();
                 string response = match.MovePlayer(player, gameAction);
                 
-                Frame frame = new Frame(ActionType.JoinMatch, response);
+                Frame frame = new Frame(ActionType.MovePlayer, response);
                 FrameConnection.Send(socket, frame);
             }
             catch (Exception ex)
             {
                 Frame frame = new Frame(ActionType.MovePlayer, ex.Message);
+                FrameConnection.Send(socket, frame);
+            }
+        }
+
+        public static void AttackPlayer(Socket socket, User user, PlayerGameAction gameAction)
+        {
+            try
+            {
+                Player player = match.GetPlayer(user);
+                match = GetMatch();
+                string response = match.AttackPlayer(player, gameAction);
+
+                Frame frame = new Frame(ActionType.AttackPlayer, response);
+                FrameConnection.Send(socket, frame);
+            }
+            catch (Exception ex)
+            {
+                Frame frame = new Frame(ActionType.AttackPlayer, ex.Message);
                 FrameConnection.Send(socket, frame);
             }
         }
