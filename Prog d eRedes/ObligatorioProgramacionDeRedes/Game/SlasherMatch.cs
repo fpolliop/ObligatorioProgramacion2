@@ -329,6 +329,7 @@ namespace Game
         {
             Tuple<int, int> position = GetPlayerPosition(playerAttacked);
             board[position.Item1, position.Item2] = null;
+            playersInMatch.Remove(playerAttacked);
             //hacer algo mas?
         }
 
