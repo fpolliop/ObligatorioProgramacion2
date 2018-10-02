@@ -16,12 +16,13 @@ namespace Controllers
     public class ServerController
     {
         private static SlasherMatch match;
+        private static bool activeMatch;
 
         public static string Connect(Frame frame, List<User> users)
         {
             string receive = frame.Data;
             string nickname = receive;
-            User userAux = new User(nickname);
+            User userAux = new User(nickname, null);
             foreach (var user in users)
             {
                 if (user != null && user.Equals(userAux))
@@ -33,7 +34,7 @@ namespace Controllers
                     else
                     {
                         return "EXISTENT";
-                    } 
+                    }
                 }
             }
             return "OK";
@@ -50,39 +51,57 @@ namespace Controllers
 
         public static void ListConnectedUsers(Socket socket, List<User> users)
         {
-            string response = "";
-            foreach (var user in users)
+            if (!activeMatch)
             {
-                if (user != null && user.IsConnected == true)
+                string response = "";
+                foreach (var user in users)
                 {
-                    response += user.Nickname + ";";
+                    if (user != null && user.IsConnected == true)
+                    {
+                        response += user.Nickname + ";";
+                    }
                 }
+
+                Frame frame = new Frame(ActionType.ListConnectedUsers, response);
+                FrameConnection.Send(socket, frame);
+            } else
+            {
+                string response = "No se puede realizar pedidos al servidor cuando hay una partida activa";
+                Frame frame = new Frame(ActionType.ListConnectedUsers, response);
+                FrameConnection.Send(socket, frame);
             }
 
-            Frame frame = new Frame(ActionType.ListConnectedUsers, response);
-            FrameConnection.Send(socket, frame);
         }
 
         public static void ListRegisteredUsers(Socket socket, List<User> users)
         {
-            string response = "";
-            foreach (var user in users)
+            if (!activeMatch)
             {
-                if (user != null)
+                string response = "";
+                foreach (var user in users)
                 {
-                    response += user.Nickname + ";";
+                    if (user != null)
+                    {
+                        response += user.Nickname + ";";
+                    }
                 }
-            }
 
-            Frame frame = new Frame(ActionType.ListConnectedUsers, response);
-            FrameConnection.Send(socket, frame);
+                Frame frame = new Frame(ActionType.ListRegisteredUsers, response);
+                FrameConnection.Send(socket, frame);
+            }
+            else
+            {
+                string response = "No se puede realizar pedidos al servidor cuando hay una partida activa";
+                Frame frame = new Frame(ActionType.ListRegisteredUsers, response);
+                FrameConnection.Send(socket, frame);
+            }
         }
 
         public static void Exit(Socket socket, string user, UsersRepository lists)
         {
-           /* User userToClose = lists.GetUserByName(user);
-            Frame frame = new Frame(ActionType.Exit, Encoding.ASCII.GetBytes(""));
-            FrameConnection.Send(socket, frame);*/
+            User userToClose = lists.GetUserByName(user);
+            Frame frame = new Frame(ActionType.Exit, "");
+            FrameConnection.Send(userToClose.SocketNotify, frame);
         }
 
         public static void JoinPlayerToMatch(Socket socket, User user, Role role)
@@ -91,39 +110,77 @@ namespace Controllers
             {
                 Player newPlayer = new Player(user.Nickname, role);
                 match = GetMatch();
+                if (match.hasFinished)
+                    match = new SlasherMatch();
                 match.AddPlayer(newPlayer);
                 if (!match.hasStarted)
                 {
                     match.StartMatch();
+                    activeMatch = true;
                 }
                 Frame frame = new Frame(ActionType.JoinMatch, "OK");
                 FrameConnection.Send(socket, frame);
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 Frame frame = new Frame(ActionType.JoinMatch, ex.Message);
                 FrameConnection.Send(socket, frame);
             }
         }
 
-        public static void MovePlayer(Socket socket, User user, PlayerGameAction gameAction)
+        public static void MovePlayer(Socket socket, User user, PlayerGameAction gameAction, UsersRepository lists)
         {
             try
             {
+
                 Player player = match.GetPlayer(user);
                 match = GetMatch();
                 string response = match.MovePlayer(player, gameAction);
-                
+
                 Frame frame = new Frame(ActionType.MovePlayer, response);
                 FrameConnection.Send(socket, frame);
+
+
+
+
             }
             catch (Exception ex)
             {
-                Frame frame = new Frame(ActionType.MovePlayer, ex.Message);
-                FrameConnection.Send(socket, frame);
+                if (!match.hasFinished)
+                {
+                    Frame frame = new Frame(ActionType.MovePlayer, ex.Message);
+                    FrameConnection.Send(socket, frame);
+                }
+                else
+                {
+                    NotifyAll(lists, ex.Message);
+                    Frame frame = new Frame(ActionType.MovePlayer, "Partida terminada");
+                    FrameConnection.Send(socket, frame);
+                }
+
             }
         }
 
-        public static void AttackPlayer(Socket socket, User user, PlayerGameAction gameAction)
+        private static void NotifyAll(UsersRepository users, string response)
+        {
+            activeMatch = false;
+            List<User> listUsers = users.GetUsers();
+            foreach (User user in listUsers)
+            {
+                NotifyUser(user.Nickname, users, response);
+            }
+        }
+
+        private static void NotifyUser(string user, UsersRepository list, string response)
+        {
+            User userNotify = list.GetUserByName(user);
+            string messageToNotify = response;
+            Frame frame = new Frame(ActionType.MovePlayer, messageToNotify);
+            Socket socketToNotify = userNotify.SocketNotify;
+            FrameConnection.Send(socketToNotify, frame);
+        }
+
+        public static void AttackPlayer(Socket socket, User user, PlayerGameAction gameAction, UsersRepository lists)
         {
             try
             {
@@ -136,9 +193,19 @@ namespace Controllers
             }
             catch (Exception ex)
             {
-                Frame frame = new Frame(ActionType.AttackPlayer, ex.Message);
-                FrameConnection.Send(socket, frame);
+                if (!match.hasFinished)
+                {
+                    Frame frame = new Frame(ActionType.AttackPlayer, ex.Message);
+                    FrameConnection.Send(socket, frame);
+                }
+                else
+                {
+                    NotifyAll(lists, ex.Message);
+                    Frame frame = new Frame(ActionType.AttackPlayer, "Partida terminada");
+                    FrameConnection.Send(socket, frame);
+                }
             }
+
         }
 
     }

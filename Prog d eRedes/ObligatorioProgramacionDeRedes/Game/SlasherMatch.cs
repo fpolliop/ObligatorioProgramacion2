@@ -11,13 +11,14 @@ namespace Game
 {
     public class SlasherMatch
     {
-        List<Player> playersInMatch;
+        public List<Player> playersInMatch;
         int round;
 
         Player[,] board;
 
         Stopwatch gameTime = new Stopwatch();
         public bool hasFinished{ get; set; }
+        public bool timerHasFinished { get; set; }
         public bool hasStarted;
         private readonly object lockBoard = new object();
 
@@ -27,6 +28,7 @@ namespace Game
             round = 1;
             hasStarted = false;
             hasFinished = false;
+            timerHasFinished = false;
             playersInMatch = new List<Player>();
         }
         public void StartMatch()
@@ -34,6 +36,7 @@ namespace Game
             hasStarted = true;
             gameTime.Start();
             Thread timerThread = new Thread(() => ControllTimer());
+            timerThread.Start();
         }
 
         private void ControllTimer()
@@ -43,12 +46,14 @@ namespace Game
                 
             }
             gameTime.Stop();
+            timerHasFinished = true;
             FinishMatch();
         }
 
         private void FinishMatch()
         {
             hasFinished = true;
+            gameTime.Stop();        
         }
 
         public void AddPlayer(Player newPlayer)
@@ -77,6 +82,14 @@ namespace Game
             {
                 if (player.Movements < 2)
                 {
+                    if (timerHasFinished)
+                    {
+                        if (SurvivorsAlive())
+                            throw new Exception("Partida terminada, han ganado los sobrevivientes");
+                        else
+                            throw new Exception("Partida terminada, nadie ha ganado");
+                    }
+                    CheckMatchHasFinished();
                     Tuple<int,int> actualPosition = GetPlayerPosition(player);
                     if (actualPosition == null) {
                         throw new Exception("Estas muerto");
@@ -111,6 +124,19 @@ namespace Game
                     throw new Exception("Partida terminada, ha ganado el monstruo");
                 }     
             }
+        }
+
+        private bool SurvivorsAlive()
+        {
+            bool survivorsAlive = false;
+            foreach (Player player in playersInMatch)
+            {
+                if (player.Role == Role.Survivor && !player.IsDead)
+                {
+                    survivorsAlive = true;
+                }
+            }
+            return survivorsAlive;
         }
 
         private bool JustSurvivorsInGame()
@@ -317,6 +343,14 @@ namespace Game
             {
                 if (player.Movements < 2)
                 {
+                    if (timerHasFinished)
+                    {
+                        if (SurvivorsAlive())
+                            throw new Exception("Partida terminada, han ganado los sobrevivientes");
+                        else
+                            throw new Exception("Partida terminada, nadie ha ganado");
+                    }
+                    CheckMatchHasFinished();
                     Tuple<int, int> actualPosition = GetPlayerPosition(player);
                     if (actualPosition == null)
                     {
@@ -325,7 +359,7 @@ namespace Game
                     CheckAttackInBounds(actualPosition, gameAction);
                     CheckAttackNotEmptySpace(actualPosition, gameAction);
                     Attack(actualPosition, gameAction, player);
-                    
+                    CheckMatchHasFinished();
                     string nearPlayers = GetNearPlayers(actualPosition);
                     return nearPlayers;
                 }

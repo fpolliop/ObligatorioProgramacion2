@@ -37,7 +37,7 @@ namespace Repository
 
         public User GetUserByName(string nickname)
         {
-            User userAux = new User(nickname);
+            User userAux = new User(nickname, null);
             foreach (var user in users)
             {
                 if (user.Equals(userAux))

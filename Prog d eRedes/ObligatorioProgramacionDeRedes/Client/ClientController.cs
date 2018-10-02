@@ -60,6 +60,10 @@ namespace Client
 
         public static void MovePlayer(Socket socket, string userNickname, int movementDirection)
         {
+            if (isInActiveMatch == true)
+            {
+
+            
             Frame frameRequest = new Frame(ActionType.MovePlayer, userNickname, movementDirection);
             FrameConnection.Send(socket, frameRequest);
             Frame frameResponse = FrameConnection.Receive(socket);
@@ -74,7 +78,8 @@ namespace Client
                 Console.WriteLine(frameResponse.Data);
             }
             else
-                Console.WriteLine(frameResponse.Data);    
+                Console.WriteLine(frameResponse.Data);
+            }
         }
 
         public static void AttackPlayer(Socket socket, string userNickname, int attackDirection)

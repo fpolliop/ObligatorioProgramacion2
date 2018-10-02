@@ -35,7 +35,8 @@ namespace Server
                 {
                     Console.WriteLine("Esperando conexion con el cliente...");
                     Socket client = server.Accept();
-                    Thread thread = new Thread(() => ProcessClient(client));
+                    Socket clientNotify = server.Accept();
+                    Thread thread = new Thread(() => ProcessClient(client, clientNotify));
                     thread.Start();
                 }
             }
@@ -45,7 +46,7 @@ namespace Server
             }
         }
 
-        private static void ProcessClient(Socket client)
+        private static void ProcessClient(Socket client, Socket clientNotify)
         {
             //Console.WriteLine("Conectado el cliente " + clientCount);
             Frame frameReceived = null;
@@ -76,7 +77,7 @@ namespace Server
                             string response = ServerController.Connect(frameReceived, lists.GetUsers());
                             if (response.Equals("OK"))
                             {
-                                AddUserInList(userNickname);
+                                AddUserInList(userNickname, clientNotify);
                                 clientCount++;
                                 Console.ForegroundColor = ConsoleColor.Green;
                                 Console.WriteLine("Conectado el cliente: " + userNickname);
@@ -84,7 +85,8 @@ namespace Server
                             }
                             else if (response.Equals("EXISTENT"))
                             {
-                                ConnectUser(userNickname);
+                                ConnectUser(userNickname, clientNotify);
+
                                 clientCount++;
                                 Console.ForegroundColor = ConsoleColor.Green;
                                 Console.WriteLine("Conectado el cliente: " + userNickname);
@@ -108,12 +110,12 @@ namespace Server
                         case ActionType.MovePlayer:
                             User player = lists.GetUserByName(userNickname);
                             PlayerGameAction gameAction = frameReceived.GetPlayerGameAction();
-                            ServerController.MovePlayer(client, player, gameAction);
+                            ServerController.MovePlayer(client, player, gameAction, lists);
                             break;
                         case ActionType.AttackPlayer:
                             User attacker = lists.GetUserByName(userNickname);
                             PlayerGameAction action = frameReceived.GetPlayerGameAction();
-                            ServerController.AttackPlayer(client, attacker, action);
+                            ServerController.AttackPlayer(client, attacker, action, lists);
                             break;
                         case ActionType.Exit:
                             ServerController.Exit(client, userNickname, lists);
@@ -148,18 +150,19 @@ namespace Server
             client.Close();
         }
 
-        private static void ConnectUser(string nickname)
+        private static void ConnectUser(string nickname, Socket clientNotify)
         {
             User user = lists.GetUserByName(nickname);
             if (user != null)
             {
                 user.IsConnected = true;
+                user.SocketNotify = clientNotify;
             }
         }
 
-        private static void AddUserInList(string nickname)
+        private static void AddUserInList(string nickname, Socket socketNotify)
         {
-            User user = new User(nickname);
+            User user = new User(nickname, socketNotify);
             lists.AddUser(user);
         }
 

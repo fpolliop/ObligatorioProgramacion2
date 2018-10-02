@@ -2,9 +2,12 @@
 using Protocol;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
+using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -12,14 +15,31 @@ namespace Client
 {
     public class Program
     {
-
+        private static int clientPort = Int32.Parse(ConfigurationSettings.AppSettings["ClientPort"].ToString());
+        private static int serverPort = Int32.Parse(ConfigurationSettings.AppSettings["ServerPort"].ToString());
+        private static string clientIp = ConfigurationSettings.AppSettings["ClientIp"].ToString();
+        private static string serverIp = ConfigurationSettings.AppSettings["ServerIp"].ToString();
         private static string userNickname = "";
         public static void Main(string[] args)
         {
-            ClientController clientController = new ClientController();
-            //debeeria hablar con clientController. no con clientProtocol
-            Console.WriteLine("Conectando al servidor...");
-            Socket socket = clientController.Connect();
+           
+        Console.WriteLine("Conectando al servidor...");
+            Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            IPEndPoint clientEndpoint = new IPEndPoint(IPAddress.Parse(clientIp), 0);
+            IPEndPoint serverEndpoint = new IPEndPoint(IPAddress.Parse(serverIp), serverPort);
+
+            IPEndPoint localEpNotify = new IPEndPoint(IPAddress.Parse(clientIp), 0);
+            Socket socketNotify = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+
+            socket.Bind(clientEndpoint);
+            socket.Connect(serverEndpoint);
+
+            socketNotify.Bind(localEpNotify);
+            socketNotify.Connect(serverEndpoint);
+
+            Thread notifies = new Thread(() => HandleNotify(socketNotify));
+
+            notifies.Start();
 
             Frame frameRequest = null;
             bool isLogged = false;
@@ -78,6 +98,33 @@ namespace Client
             socket.Close();
             Console.WriteLine("Gracias por jugar a SLASHER, presione enter para cerrar.");
             Console.ReadLine();
+        }
+
+        private static void HandleNotify(Socket socket)
+        {
+            while (socket.Connected)
+            {
+                try
+                {
+                    Frame frameResponse = FrameConnection.Receive(socket);
+                    if (frameResponse.Action == ActionType.Exit)
+                    {
+                        socket.Shutdown(SocketShutdown.Both);
+                        socket.Close();
+                    }
+                    else
+                    {
+                        string messageNotify = frameResponse.Data;
+                        Console.WriteLine("NOTIFICACION: " + messageNotify);
+                        ClientController.isInActiveMatch = false;
+                        //Console.ReadLine();
+                    }
+                }
+                catch (Exception e)
+                {
+                    Environment.Exit(0);
+                }
+            }
         }
 
         private static void Menu(Socket socket, string user)
@@ -181,6 +228,10 @@ namespace Client
                     Console.WriteLine("4 - Izquierda");
 
                     int movementDirection = GetOption(1, 4) - 1;
+                    if (!ClientController.isInActiveMatch)
+                    {
+                        break;
+                    }
                     ClientController.MovePlayer(socket, user, movementDirection);
                     break;
                 case ActionType.AttackPlayer:
@@ -190,6 +241,10 @@ namespace Client
                     Console.WriteLine("3 - Abajo");
                     Console.WriteLine("4 - Izquierda");
                     int attackDirection = GetOption(1, 4) + 3;
+                    if (!ClientController.isInActiveMatch)
+                    {
+                        break;
+                    }
                     ClientController.AttackPlayer(socket, user, attackDirection);
                     break;
             }
