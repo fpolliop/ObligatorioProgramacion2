@@ -1,10 +1,13 @@
 ﻿using DataManager;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
+
 
 namespace Protocol
 {
@@ -77,6 +80,84 @@ namespace Protocol
                 sent += current;
             }
         }
+
+        public static void SendAvatar(Socket socket, Image userAvatar)
+        {
+            MemoryStream memoryStream = new MemoryStream();
+            userAvatar.Save(memoryStream, System.Drawing.Imaging.ImageFormat.Jpeg);
+
+            byte[] imageBytes = memoryStream.ToArray();
+            userAvatar.Dispose();
+            memoryStream.Close();
+
+            SendBytes(socket, imageBytes);
+
+        }
+
+        private static void SendBytes(Socket socket, byte[] data)
+        {
+            int total = 0;
+            int size = data.Length;
+            int dataleft = size;
+            int sent;
+
+            byte[] datasize = new byte[4];
+            datasize = BitConverter.GetBytes(size);
+            sent = socket.Send(datasize);
+            
+            while (total < size)
+            {
+                sent = socket.Send(data, total, dataleft, SocketFlags.None);
+                total += sent;
+                dataleft -= sent;
+            }
+            //return total;
+        }
+
+        public static Image ReceiveAvatar(Socket s)
+        {
+            int total = 0;
+            int recv;
+            byte[] datasize = new byte[4];
+
+            recv = s.Receive(datasize, 0, 4, 0);
+            int size = BitConverter.ToInt32(datasize, 0);
+            int dataleft = size;
+            byte[] data = new byte[size];
+
+
+            while (total < size)
+            {
+                recv = s.Receive(data, total, dataleft, 0);
+                if (recv == 0)
+                {
+                    break;
+                }
+                total += recv;
+                dataleft -= recv;
+            }
+            //return data;
+            return BytesToImage(data);
+        }
+
+        private static Image BytesToImage(byte[] data)
+        {
+            
+            MemoryStream ms = new MemoryStream(data);
+            Image userAvatar = null;
+            try
+            {
+                userAvatar = Image.FromStream(ms);
+                
+            }
+            catch (ArgumentException e)
+            {
+                Console.WriteLine("Error: " + e.Message);
+            }
+             
+            return userAvatar;
+        }
+
 
         //public static void SendSegmented(Socket socket, byte[] data)
         //{

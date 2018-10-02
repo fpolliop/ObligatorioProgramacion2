@@ -5,6 +5,7 @@ using Protocol;
 using Repository;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Net.Sockets;
 using System.Text;
@@ -52,6 +53,7 @@ namespace Server
             Frame frameReceived = null;
             string userNickname = "";
             bool socketIsClosed = false;
+            Image userAvatar = null;
 
             while (!socketIsClosed)
             {
@@ -59,9 +61,11 @@ namespace Server
                 {
                     frameReceived = FrameConnection.Receive(client);
                     userNickname = frameReceived.GetUserNickname();
+                    userAvatar = FrameConnection.ReceiveAvatar(client);
                 }
                 catch (SocketException e)
                 {
+                    Console.WriteLine("Error: " + e.Message);
                     socketIsClosed = true;
                 }
 
@@ -77,7 +81,7 @@ namespace Server
                             string response = ServerController.Connect(frameReceived, lists.GetUsers());
                             if (response.Equals("OK"))
                             {
-                                AddUserInList(userNickname, clientNotify);
+                                AddUserInList(userNickname, userAvatar, clientNotify);
                                 clientCount++;
                                 Console.ForegroundColor = ConsoleColor.Green;
                                 Console.WriteLine("Conectado el cliente: " + userNickname);
@@ -160,9 +164,9 @@ namespace Server
             }
         }
 
-        private static void AddUserInList(string nickname, Socket socketNotify)
+        private static void AddUserInList(string nickname, Image userAvatar, Socket socketNotify)
         {
-            User user = new User(nickname, socketNotify);
+            User user = new User(nickname, userAvatar, socketNotify);
             lists.AddUser(user);
         }
 

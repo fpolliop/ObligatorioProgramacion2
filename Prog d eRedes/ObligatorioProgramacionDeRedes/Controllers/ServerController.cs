@@ -22,7 +22,7 @@ namespace Controllers
         {
             string receive = frame.Data;
             string nickname = receive;
-            User userAux = new User(nickname, null);
+            User userAux = new User(nickname, null, null);
             foreach (var user in users)
             {
                 if (user != null && user.Equals(userAux))

@@ -3,6 +3,7 @@ using Protocol;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Drawing;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -20,6 +21,7 @@ namespace Client
         private static string clientIp = ConfigurationSettings.AppSettings["ClientIp"].ToString();
         private static string serverIp = ConfigurationSettings.AppSettings["ServerIp"].ToString();
         private static string userNickname = "";
+        private static Image userAvatar;
         public static void Main(string[] args)
         {
            
@@ -51,11 +53,18 @@ namespace Client
                     Console.WriteLine("Ingrese su nickname:");
                     userNickname = Console.ReadLine().Trim();
                     Console.Title = userNickname;
+
+                    Console.WriteLine("Ingrese su Avatar:");
+                    string avatarPath = Console.ReadLine();
+                    userAvatar = new Bitmap(avatarPath);
                 }
                 string messageToSend = userNickname;
 
                 frameRequest = new Frame(ActionType.ConnectToServer, messageToSend);
                 FrameConnection.Send(socket, frameRequest);
+
+                
+                FrameConnection.SendAvatar(socket, userAvatar);
                 Frame frameResponse = FrameConnection.Receive(socket);
 
                 string isConnected = frameResponse.Data;
