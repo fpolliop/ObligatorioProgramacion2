@@ -61,7 +61,7 @@ namespace Server
                 {
                     frameReceived = FrameConnection.Receive(client);
                     userNickname = frameReceived.GetUserNickname();
-                    userAvatar = FrameConnection.ReceiveAvatar(client);
+                    
                 }
                 catch (SocketException e)
                 {
@@ -76,8 +76,8 @@ namespace Server
                     {
 
                         case ActionType.ConnectToServer:
-                            
 
+                            userAvatar = FrameConnection.ReceiveAvatar(client);
                             string response = ServerController.Connect(frameReceived, lists.GetUsers());
                             if (response.Equals("OK"))
                             {

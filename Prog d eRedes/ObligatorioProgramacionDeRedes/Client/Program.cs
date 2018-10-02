@@ -55,8 +55,20 @@ namespace Client
                     Console.Title = userNickname;
 
                     Console.WriteLine("Ingrese su Avatar:");
-                    string avatarPath = Console.ReadLine();
-                    userAvatar = new Bitmap(avatarPath);
+                    bool avatarIsValid = false;
+                    while (!avatarIsValid)
+                    {
+                        try
+                        {
+                            string avatarPath = Console.ReadLine();
+                            userAvatar = new Bitmap(avatarPath);
+                            avatarIsValid = true;
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine("Avatar invalido. Ingrese la ruta de la imagen");
+                        }
+                    }
                 }
                 string messageToSend = userNickname;
 
