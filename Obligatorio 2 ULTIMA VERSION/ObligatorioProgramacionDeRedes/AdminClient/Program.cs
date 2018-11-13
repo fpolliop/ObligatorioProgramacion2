@@ -33,12 +33,13 @@ namespace AdminClient
             Console.WriteLine("3. Modificar usuario");
             Console.WriteLine("4. Rankings");
             Console.WriteLine("5. Estadisticas");
-            Console.WriteLine("6. Salir");
+            Console.WriteLine("6. Ver Log");
+            Console.WriteLine("7. Salir");
             Console.WriteLine("Seleccione la opcion que desea realizar");
 
             string line = Console.ReadLine();
             int option = ConvertToInt(line);
-            while (!(option <= 6 && option > 0) || !IsValidOption(line))
+            while (!(option <= 7 && option > 0) || !IsValidOption(line))
             {
                 Console.WriteLine("Opcion no valida, seleccione una opcion correcta");
                 line = Console.ReadLine();
@@ -53,7 +54,7 @@ namespace AdminClient
             {
                 return false;
             }
-            string options = "123456";
+            string options = "1234567";
             if (options.Contains(word))
             {
                 return true;
@@ -93,8 +94,24 @@ namespace AdminClient
                     Statistics(client);
                     break;
                 case 6:
+                    ShowLog(client);
+                    break;
+                case 7:
                     CloseApp();
                     break;
+            }
+        }
+
+        private static void ShowLog(ServiceClient client)
+        {
+            List<string> logLines = client.GetLog().ToList();
+            if(logLines.Count == 0)
+            {
+                Console.WriteLine("No se encontro un log para la ultima partida.");
+            }
+            foreach(string line in logLines)
+            {
+                Console.WriteLine(line);
             }
         }
 

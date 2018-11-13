@@ -269,5 +269,10 @@ namespace Server
         {
             return usersList.GetStatistics();
         }
+
+        public override List<string> GetLog()
+        {
+            return ServerController.GetLog();
+        }
     }
 }

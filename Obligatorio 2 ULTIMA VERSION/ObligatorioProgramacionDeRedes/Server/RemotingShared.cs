@@ -18,5 +18,6 @@ namespace Server
         public abstract List<Ranking> GetRankings();
 
         public abstract List<Statistic> GetStatistics();
+        public abstract List<string> GetLog();
     }
 }

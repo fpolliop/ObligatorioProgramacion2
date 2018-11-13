@@ -59,6 +59,10 @@
       <Project>{0c9c99f9-3360-4f9c-8465-70d92ff82d99}</Project>
       <Name>Entities</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Log\Log.csproj">
+      <Project>{e7104555-d8b3-4d79-a326-8a6c8578265d}</Project>
+      <Name>Log</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Protocol\Protocol.csproj">
       <Project>{c5b831a8-bd27-4ab5-8d79-91513d429af3}</Project>
       <Name>Protocol</Name>

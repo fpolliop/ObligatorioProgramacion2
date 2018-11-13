@@ -85,5 +85,11 @@ namespace WcfServiceLibrary
         {
             return string.Format("You entered: {0}", value);
         }
+
+        public List<string> GetLog()
+        {
+            EstablishConnection();
+            return controller.GetLog();
+        }
     }
 }

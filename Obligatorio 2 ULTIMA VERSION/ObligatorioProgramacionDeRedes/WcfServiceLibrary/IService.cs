@@ -24,8 +24,8 @@ namespace WcfServiceLibrary
         [OperationContract]
         List<string> GetUsers();
 
-       /* [OperationContract]
-        LogEntry GetLastLog();*/
+        [OperationContract]
+        List<string> GetLog();
 
         [OperationContract]
         List<Ranking> GetRanking();

@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Net.Sockets;
 using static Protocol.Frame;
+using Log;
 
 namespace Server
 {
@@ -18,6 +19,7 @@ namespace Server
             match = null;
             activeMatch = false;
             this.repository = repository;
+            SlasherLog.Start();
         }
 
         public string Connect(Frame frame, List<User> users)
@@ -216,6 +218,11 @@ namespace Server
                     }
                 }
             }
+        }
+
+        internal List<string> GetLog()
+        {
+            return SlasherLog.GetLastMatchLog();
         }
     }
 }

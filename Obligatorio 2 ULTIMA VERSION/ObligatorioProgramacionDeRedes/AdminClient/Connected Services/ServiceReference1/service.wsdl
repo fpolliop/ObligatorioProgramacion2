@@ -33,6 +33,12 @@
   <wsdl:message name="IService_GetUsers_OutputMessage">
     <wsdl:part name="parameters" element="tns:GetUsersResponse" />
   </wsdl:message>
+  <wsdl:message name="IService_GetLog_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetLog" />
+  </wsdl:message>
+  <wsdl:message name="IService_GetLog_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetLogResponse" />
+  </wsdl:message>
   <wsdl:message name="IService_GetRanking_InputMessage">
     <wsdl:part name="parameters" element="tns:GetRanking" />
   </wsdl:message>
@@ -73,6 +79,10 @@
     <wsdl:operation name="GetUsers">
       <wsdl:input wsaw:Action="http://tempuri.org/IService/GetUsers" message="tns:IService_GetUsers_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IService/GetUsersResponse" message="tns:IService_GetUsers_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetLog">
+      <wsdl:input wsaw:Action="http://tempuri.org/IService/GetLog" message="tns:IService_GetLog_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IService/GetLogResponse" message="tns:IService_GetLog_OutputMessage" />
     </wsdl:operation>
     <wsdl:operation name="GetRanking">
       <wsdl:input wsaw:Action="http://tempuri.org/IService/GetRanking" message="tns:IService_GetRanking_InputMessage" />
@@ -122,6 +132,15 @@
     </wsdl:operation>
     <wsdl:operation name="GetUsers">
       <soap:operation soapAction="http://tempuri.org/IService/GetUsers" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetLog">
+      <soap:operation soapAction="http://tempuri.org/IService/GetLog" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>

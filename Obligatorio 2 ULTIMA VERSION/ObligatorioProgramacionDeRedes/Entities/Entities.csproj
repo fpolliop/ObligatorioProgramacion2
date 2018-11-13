@@ -53,5 +53,11 @@
     <Compile Include="User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Log\Log.csproj">
+      <Project>{e7104555-d8b3-4d79-a326-8a6c8578265d}</Project>
+      <Name>Log</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

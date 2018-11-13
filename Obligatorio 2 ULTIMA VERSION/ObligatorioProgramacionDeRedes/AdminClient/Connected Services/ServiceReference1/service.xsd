@@ -58,6 +58,18 @@
       </xs:sequence>
     </xs:complexType>
   </xs:element>
+  <xs:element name="GetLog">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetLogResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q2="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="GetLogResult" nillable="true" type="q2:ArrayOfstring" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
   <xs:element name="GetRanking">
     <xs:complexType>
       <xs:sequence />
@@ -66,7 +78,7 @@
   <xs:element name="GetRankingResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q2="http://schemas.datacontract.org/2004/07/Entities" minOccurs="0" name="GetRankingResult" nillable="true" type="q2:ArrayOfRanking" />
+        <xs:element xmlns:q3="http://schemas.datacontract.org/2004/07/Entities" minOccurs="0" name="GetRankingResult" nillable="true" type="q3:ArrayOfRanking" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -78,21 +90,21 @@
   <xs:element name="GetStatisticsResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q3="http://schemas.datacontract.org/2004/07/Entities" minOccurs="0" name="GetStatisticsResult" nillable="true" type="q3:ArrayOfStatistic" />
+        <xs:element xmlns:q4="http://schemas.datacontract.org/2004/07/Entities" minOccurs="0" name="GetStatisticsResult" nillable="true" type="q4:ArrayOfStatistic" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
   <xs:element name="GetDataUsingDataContract">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q4="http://schemas.datacontract.org/2004/07/WcfServiceLibrary" minOccurs="0" name="composite" nillable="true" type="q4:CompositeType" />
+        <xs:element xmlns:q5="http://schemas.datacontract.org/2004/07/WcfServiceLibrary" minOccurs="0" name="composite" nillable="true" type="q5:CompositeType" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
   <xs:element name="GetDataUsingDataContractResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q5="http://schemas.datacontract.org/2004/07/WcfServiceLibrary" minOccurs="0" name="GetDataUsingDataContractResult" nillable="true" type="q5:CompositeType" />
+        <xs:element xmlns:q6="http://schemas.datacontract.org/2004/07/WcfServiceLibrary" minOccurs="0" name="GetDataUsingDataContractResult" nillable="true" type="q6:CompositeType" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>

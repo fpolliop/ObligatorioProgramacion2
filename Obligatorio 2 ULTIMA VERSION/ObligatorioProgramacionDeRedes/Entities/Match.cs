@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Log;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
@@ -36,6 +37,7 @@ namespace Entities
             gameTime.Start();
             Thread timerThread = new Thread(() => ControllTimer());
             timerThread.Start();
+            SlasherLog.StartMatch();
         }
 
         private void ControllTimer()
@@ -57,6 +59,7 @@ namespace Entities
             gameTime.Stop();
             RankingsUpdate();
             StatisticsUpdate();
+            SlasherLog.FinishMatch();
         }
 
         private void CheckWinners()
@@ -132,6 +135,7 @@ namespace Entities
                 playerColumn = random.Next(0, 7);
             }
             Board[playerRow, playerColumn] = newPlayer;
+            SlasherLog.AddPlayer(newPlayer.Nickname, newPlayer.Role.ToString());
 
         }
 
@@ -157,6 +161,7 @@ namespace Entities
                     CheckInBounds(actualPosition, gameAction);
                     CheckFreeSpace(actualPosition, gameAction);
                     PlayerMovement(actualPosition, gameAction, player);
+                    SlasherLog.PlayerAction(player.Nickname, GameActionString(gameAction));
                     CheckMatchHasFinished();
                     Tuple<int, int> newPosition = GetPlayerPosition(player);
                     string nearPlayers = GetNearPlayers(newPosition);
@@ -633,7 +638,35 @@ namespace Entities
                 return false;
             return true;
         }
+
+        private string GameActionString(PlayerGameAction gameAction)
+        {
+            switch (gameAction)
+            {
+                case PlayerGameAction.AttackDown:
+                    return "Atacar hacia abajo";
+                case PlayerGameAction.AttackLeft:
+                    return "Atacar hacia izquierda";
+                case PlayerGameAction.AttackRight:
+                    return "Atacar hacia derecha";
+                case PlayerGameAction.AttackUp:
+                    return "Atacar hacia arriba";
+                case PlayerGameAction.MoveDown:
+                    return "Mover hacia abajo";
+                case PlayerGameAction.MoveLeft:
+                    return "Mover hacia izquierda";
+                case PlayerGameAction.MoveRight:
+                    return "Mover hacia derecha";
+                case PlayerGameAction.MoveUp:
+                    return "Mover hacia arriba";
+                default:
+                    return "";
+
+
+            }
+        }
     }
+
 }
 
 public enum PlayerGameAction
