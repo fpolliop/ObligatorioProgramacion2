@@ -57,17 +57,17 @@
     <None Include="App.config">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Connected Services\ServiceReference1\AdminClient.ServiceReference1.CompositeType1.datasource">
+    <None Include="Connected Services\ServiceReference1\AdminClient.ServiceReference1.CompositeType.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
-    <None Include="Connected Services\ServiceReference1\AdminClient.ServiceReference1.Ranking1.datasource">
+    <None Include="Connected Services\ServiceReference1\AdminClient.ServiceReference1.Ranking.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
-    <None Include="Connected Services\ServiceReference1\AdminClient.ServiceReference1.Statistic1.datasource">
+    <None Include="Connected Services\ServiceReference1\AdminClient.ServiceReference1.Statistic.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
-    <None Include="Connected Services\ServiceReference1\AdminClient.ServiceReference1.User1.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
+    <None Include="Connected Services\ServiceReference1\Arrays.xsd">
+      <SubType>Designer</SubType>
     </None>
     <None Include="Connected Services\ServiceReference1\Entities.xsd">
       <SubType>Designer</SubType>

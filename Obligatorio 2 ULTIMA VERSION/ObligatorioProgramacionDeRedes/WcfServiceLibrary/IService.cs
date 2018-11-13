@@ -22,7 +22,7 @@ namespace WcfServiceLibrary
         bool DeleteUser(string name);
 
         [OperationContract]
-        List<User> GetUsers();
+        List<string> GetUsers();
 
        /* [OperationContract]
         LogEntry GetLastLog();*/

@@ -15,51 +15,6 @@ namespace AdminClient.ServiceReference1 {
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="User", Namespace="http://schemas.datacontract.org/2004/07/Entities")]
-    [System.SerializableAttribute()]
-    public partial class User : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
-        
-        [System.NonSerializedAttribute()]
-        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string NicknameField;
-        
-        [global::System.ComponentModel.BrowsableAttribute(false)]
-        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
-            get {
-                return this.extensionDataField;
-            }
-            set {
-                this.extensionDataField = value;
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string Nickname {
-            get {
-                return this.NicknameField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.NicknameField, value) != true)) {
-                    this.NicknameField = value;
-                    this.RaisePropertyChanged("Nickname");
-                }
-            }
-        }
-        
-        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
-        
-        protected void RaisePropertyChanged(string propertyName) {
-            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
-            if ((propertyChanged != null)) {
-                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
-            }
-        }
-    }
-    
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
     [System.Runtime.Serialization.DataContractAttribute(Name="Ranking", Namespace="http://schemas.datacontract.org/2004/07/Entities")]
     [System.SerializableAttribute()]
     public partial class Ranking : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
@@ -74,7 +29,7 @@ namespace AdminClient.ServiceReference1 {
         private string NicknameField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string PointsField;
+        private int PointsField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private string RoleField;
@@ -116,12 +71,12 @@ namespace AdminClient.ServiceReference1 {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public string Points {
+        public int Points {
             get {
                 return this.PointsField;
             }
             set {
-                if ((object.ReferenceEquals(this.PointsField, value) != true)) {
+                if ((this.PointsField.Equals(value) != true)) {
                     this.PointsField = value;
                     this.RaisePropertyChanged("Points");
                 }
@@ -373,10 +328,10 @@ namespace AdminClient.ServiceReference1 {
         System.Threading.Tasks.Task<bool> DeleteUserAsync(string name);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IService/GetUsers", ReplyAction="http://tempuri.org/IService/GetUsersResponse")]
-        AdminClient.ServiceReference1.User[] GetUsers();
+        string[] GetUsers();
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IService/GetUsers", ReplyAction="http://tempuri.org/IService/GetUsersResponse")]
-        System.Threading.Tasks.Task<AdminClient.ServiceReference1.User[]> GetUsersAsync();
+        System.Threading.Tasks.Task<string[]> GetUsersAsync();
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IService/GetRanking", ReplyAction="http://tempuri.org/IService/GetRankingResponse")]
         AdminClient.ServiceReference1.Ranking[] GetRanking();
@@ -454,11 +409,11 @@ namespace AdminClient.ServiceReference1 {
             return base.Channel.DeleteUserAsync(name);
         }
         
-        public AdminClient.ServiceReference1.User[] GetUsers() {
+        public string[] GetUsers() {
             return base.Channel.GetUsers();
         }
         
-        public System.Threading.Tasks.Task<AdminClient.ServiceReference1.User[]> GetUsersAsync() {
+        public System.Threading.Tasks.Task<string[]> GetUsersAsync() {
             return base.Channel.GetUsersAsync();
         }
         

@@ -249,9 +249,15 @@ namespace Server
             return false;
         }
 
-        public override List<User> GetUsers()
+        public override List<string> GetUsers()
         {
-            return usersList.GetUsers();
+            List<User> users = usersList.GetUsers();
+            List<string> nicknames = new List<string>();
+            foreach (User user in users)
+            {
+                nicknames.Add(user.Nickname);
+            }
+            return nicknames;
         }
 
         public override bool ModifyUser(string name, string newName)

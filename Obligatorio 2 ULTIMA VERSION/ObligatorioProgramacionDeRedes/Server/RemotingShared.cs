@@ -13,7 +13,7 @@ namespace Server
         public abstract bool AddUser(string name);
 
         public abstract bool DeleteUser(string name);
-        public abstract List<User> GetUsers();
+        public abstract List<string> GetUsers();
         public abstract bool ModifyUser(string name, string newName);
         public abstract List<Ranking> GetRankings();
 

@@ -128,17 +128,17 @@ namespace AdminClient
 
         private static void DeleteUser(ServiceClient client)
         {
-            /*Console.WriteLine("Lista de usuarios: ");
+            Console.WriteLine("Lista de usuarios: ");
 
-            List<User> users = client.GetUsers().ToList();
+            List<string> users = client.GetUsers().ToList();
 
             int cont = 1;
-            foreach (var user in users)
+            foreach (string user in users)
             {
-                Console.WriteLine("{0}. " + user.Nickname, cont);
+                Console.WriteLine("{0}. " + user, cont);
                 cont++;
             }
-            */
+            
             Console.WriteLine("Escriba el nombre del usuario que desea eliminar: ");
             string toDelete = Console.ReadLine();
 
@@ -157,18 +157,17 @@ namespace AdminClient
 
         private static void ModifyUser(ServiceClient client)
         {
-            /*
             Console.WriteLine("Lista de usuarios: ");
 
-            List<User> users = client.GetUsers().ToList();
+            List<string> users = client.GetUsers().ToList();
 
             int cont = 1;
-            foreach (var user in users)
+            foreach (string user in users)
             {
-                Console.WriteLine("{0}. " + user.Nickname, cont);
+                Console.WriteLine("{0}. " + user, cont);
                 cont++;
             }
-            */
+
             Console.WriteLine("Escriba el nombre del usuario que desea modificar: ");
             string nameToModify = Console.ReadLine();
 

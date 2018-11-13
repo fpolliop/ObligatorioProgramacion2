@@ -56,7 +56,7 @@ namespace WcfServiceLibrary
             return statistics;
         }
 
-        public List<User> GetUsers()
+        public List<string> GetUsers()
         {
             EstablishConnection();
             return controller.GetUsers();
