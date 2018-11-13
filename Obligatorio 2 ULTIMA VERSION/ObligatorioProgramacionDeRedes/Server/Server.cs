@@ -10,9 +10,11 @@ using System.Runtime.Remoting.Channels;
 using System.Runtime.Remoting.Channels.Tcp;
 using System.Threading;
 using static Protocol.Frame;
+using System.Collections.Generic;
 
 namespace Server
 {
+    [Serializable]
     public class Server : RemotingShared
     {
         private ServerController ServerController { get; set; }
@@ -235,6 +237,27 @@ namespace Server
                 return true;
             }
             return false;
+        }
+
+        public override bool DeleteUser(string name)
+        {
+            User foundUser = usersList.GetUserByNickname(name);
+            if (foundUser != null && !foundUser.IsConnected)
+            {
+                usersList.RemoveUser(foundUser);
+                return true;
+            }
+            return false;
+        }
+
+        public override List<User> GetUsers()
+        {
+            return usersList.GetUsers();
+        }
+
+        public override bool ModifyUser(string name, string newName)
+        {
+            return usersList.ModifyUser(name, newName);
         }
     }
 }

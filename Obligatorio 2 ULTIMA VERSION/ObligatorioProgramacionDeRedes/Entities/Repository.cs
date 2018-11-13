@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Entities
@@ -66,6 +67,19 @@ namespace Entities
         public void AddStatistic(Statistic statistic)
         {
             statistics.Add(statistic);
+        }
+
+        public bool ModifyUser(string name, string newName)
+        {
+            foreach(User user in users)
+            {
+                if (user.Nickname.Equals(name))
+                {
+                    user.Nickname = newName;
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }

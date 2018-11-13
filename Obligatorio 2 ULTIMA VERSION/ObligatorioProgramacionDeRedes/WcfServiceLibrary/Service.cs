@@ -37,7 +37,9 @@ namespace WcfServiceLibrary
 
         public bool DeleteUser(string name)
         {
-            throw new NotImplementedException();
+            EstablishConnection();
+            bool response = controller.DeleteUser(name);
+            return response;
         }
 
         public List<Ranking> GetRanking()
@@ -52,12 +54,14 @@ namespace WcfServiceLibrary
 
         public List<User> GetUsers()
         {
-            throw new NotImplementedException();
+            EstablishConnection();
+            return controller.GetUsers();
         }
 
         public bool ModifyUser(string name, string newName)
         {
-            throw new NotImplementedException();
+            EstablishConnection();
+            return controller.ModifyUser(name, newName);
         }
 
         public CompositeType GetDataUsingDataContract(CompositeType composite)
