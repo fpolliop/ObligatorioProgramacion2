@@ -262,5 +262,10 @@ namespace Server
         {
             return usersList.GetRankings();
         }
+
+        public override List<Statistic> GetStatistics()
+        {
+            return usersList.GetStatistics();
+        }
     }
 }

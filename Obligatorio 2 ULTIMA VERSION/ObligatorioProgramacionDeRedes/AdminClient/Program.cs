@@ -32,12 +32,13 @@ namespace AdminClient
             Console.WriteLine("2. Baja de usuario");
             Console.WriteLine("3. Modificar usuario");
             Console.WriteLine("4. Rankings");
-            Console.WriteLine("5. Salir");
+            Console.WriteLine("5. Estadisticas");
+            Console.WriteLine("6. Salir");
             Console.WriteLine("Seleccione la opcion que desea realizar");
 
             string line = Console.ReadLine();
             int option = ConvertToInt(line);
-            while (!(option <= 5 && option > 0) || !IsValidOption(line))
+            while (!(option <= 6 && option > 0) || !IsValidOption(line))
             {
                 Console.WriteLine("Opcion no valida, seleccione una opcion correcta");
                 line = Console.ReadLine();
@@ -52,7 +53,7 @@ namespace AdminClient
             {
                 return false;
             }
-            string options = "12345";
+            string options = "123456";
             if (options.Contains(word))
             {
                 return true;
@@ -89,6 +90,9 @@ namespace AdminClient
                     Ranking(client);
                     break;
                 case 5:
+                    Statistics(client);
+                    break;
+                case 6:
                     CloseApp();
                     break;
             }
@@ -190,6 +194,21 @@ namespace AdminClient
             foreach (Ranking rank in rankings)
             {
                 Console.WriteLine($"Jugador: {rank.Nickname} como {rank.Role.ToString()} - fecha: {rank.Date}.  - Puntaje: {rank.Points}");
+            }
+        }
+
+        private static void Statistics(ServiceClient client)
+        {
+            List<Statistic> statistics = client.GetStatistics().ToList();
+            foreach (Statistic stat in statistics)
+            {
+                StringBuilder builder = new StringBuilder();
+                builder.Append("- Partida del: " + stat.Date);
+                foreach (GameStatistic gameStatistic in stat.GameStatistics)
+                {
+                    builder.Append("\n Jugador: " + gameStatistic.Nickname + "\n  -Rol: " + gameStatistic.Role + "\n  -Ha Ganado: " + gameStatistic.Result + ". \n");
+                }
+                Console.WriteLine(builder.ToString());
             }
         }
 

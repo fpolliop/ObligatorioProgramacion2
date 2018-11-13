@@ -32,6 +32,11 @@ namespace Entities
             users.Remove(user);
         }
 
+        public void DeleteFirstStatistic()
+        {
+            statistics.RemoveAt(0);
+        }
+        
         public int GetCountUsers()
         {
             return users.Count;

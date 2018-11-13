@@ -51,7 +51,9 @@ namespace WcfServiceLibrary
 
         public List<Statistic> GetStatistics()
         {
-            throw new NotImplementedException();
+            EstablishConnection();
+            List<Statistic> statistics = controller.GetStatistics();
+            return statistics;
         }
 
         public List<User> GetUsers()

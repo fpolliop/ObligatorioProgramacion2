@@ -96,7 +96,7 @@ namespace Entities
             List<Player> players = PlayersInMatch;
             if (repository.GetStatistics().Count == 10)
             {
-                repository.GetStatistics().RemoveAt(0);
+                repository.DeleteFirstStatistic();
             }
             Statistic statistic = new Statistic();
             statistic.GameStatistics = new List<GameStatistic>();

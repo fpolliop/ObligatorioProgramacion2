@@ -16,5 +16,7 @@ namespace Server
         public abstract List<User> GetUsers();
         public abstract bool ModifyUser(string name, string newName);
         public abstract List<Ranking> GetRankings();
+
+        public abstract List<Statistic> GetStatistics();
     }
 }

@@ -1,14 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Entities
 {
+    [Serializable]
+    [DataContract]
     public class Statistic
     {
+        [DataMember]
         public List<GameStatistic> GameStatistics { get; set; }
+        [DataMember]
         public string Date { get; set;}
 
         public override string ToString()
