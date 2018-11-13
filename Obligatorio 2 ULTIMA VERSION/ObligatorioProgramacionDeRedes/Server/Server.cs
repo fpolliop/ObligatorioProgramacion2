@@ -14,7 +14,6 @@ using System.Collections.Generic;
 
 namespace Server
 {
-    [Serializable]
     public class Server : RemotingShared
     {
         private ServerController ServerController { get; set; }
@@ -258,6 +257,10 @@ namespace Server
         public override bool ModifyUser(string name, string newName)
         {
             return usersList.ModifyUser(name, newName);
+        }
+        public override List<Ranking> GetRankings()
+        {
+            return usersList.GetRankings();
         }
     }
 }

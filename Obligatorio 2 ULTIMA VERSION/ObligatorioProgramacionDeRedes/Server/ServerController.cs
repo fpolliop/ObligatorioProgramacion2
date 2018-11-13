@@ -217,42 +217,5 @@ namespace Server
                 }
             }
         }
-
-        public bool AddUser(string name)
-        {
-            User userExists = repository.GetUserByNickname(name);
-            if (userExists == null)
-            {
-                User newUser = new User(name);
-                //lock (userLocker)
-               // {
-                    repository.AddUser(newUser);
-
-                //}
-                return true;
-            }
-            return false;
-        }
-
-        public bool DeleteUser(string name)
-        {
-            User foundUser = repository.GetUserByNickname(name);
-            if(foundUser != null && !foundUser.IsConnected)
-            {
-                repository.RemoveUser(foundUser);
-                return true;
-            }
-            return false;
-        }
-
-        public List<User> GetUsers()
-        {
-            return repository.GetUsers();
-        }
-
-        public bool ModifyUser(string name, string newName)
-        {
-            return repository.ModifyUser(name, newName);
-        }
     }
 }

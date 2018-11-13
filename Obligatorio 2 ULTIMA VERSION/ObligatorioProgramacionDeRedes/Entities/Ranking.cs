@@ -1,19 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Entities
 {
+    [Serializable]
+    [DataContract]
     public class Ranking
     {
+        [DataMember]
         public string Nickname { get; set; }
-
-        public string Points { get; set; }
-
+        [DataMember]
+        public int Points { get; set; }
+        [DataMember]
         public string Date { get; set; }
-
+        [DataMember]
         public string Role { get; set; }
 
         public override string ToString()

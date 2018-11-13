@@ -85,7 +85,7 @@ namespace Entities
                 Ranking ranking = new Ranking();
                 ranking.Nickname = player.Nickname;
                 ranking.Role = player.Role.ToString();
-                ranking.Points = player.Points.ToString();
+                ranking.Points = player.Points;
                 ranking.Date = DateTime.Now.ToString();
                 repository.AddRanking(ranking);
             }

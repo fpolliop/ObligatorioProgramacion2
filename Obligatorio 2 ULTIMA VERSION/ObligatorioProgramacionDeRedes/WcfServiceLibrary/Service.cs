@@ -44,7 +44,9 @@ namespace WcfServiceLibrary
 
         public List<Ranking> GetRanking()
         {
-            throw new NotImplementedException();
+            EstablishConnection();
+            List<Ranking> rankings = controller.GetRankings();
+            return rankings;
         }
 
         public List<Statistic> GetStatistics()

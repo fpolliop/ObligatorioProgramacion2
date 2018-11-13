@@ -31,12 +31,13 @@ namespace AdminClient
             Console.WriteLine("1. Alta de usuario");
             Console.WriteLine("2. Baja de usuario");
             Console.WriteLine("3. Modificar usuario");
-            Console.WriteLine("4. Salir");
+            Console.WriteLine("4. Rankings");
+            Console.WriteLine("5. Salir");
             Console.WriteLine("Seleccione la opcion que desea realizar");
 
             string line = Console.ReadLine();
             int option = ConvertToInt(line);
-            while (!(option <= 4 && option > 0) || !IsValidOption(line))
+            while (!(option <= 5 && option > 0) || !IsValidOption(line))
             {
                 Console.WriteLine("Opcion no valida, seleccione una opcion correcta");
                 line = Console.ReadLine();
@@ -51,7 +52,7 @@ namespace AdminClient
             {
                 return false;
             }
-            string options = "1234";
+            string options = "12345";
             if (options.Contains(word))
             {
                 return true;
@@ -85,6 +86,9 @@ namespace AdminClient
                     ModifyUser(client);
                     break;
                 case 4:
+                    Ranking(client);
+                    break;
+                case 5:
                     CloseApp();
                     break;
             }
@@ -177,6 +181,15 @@ namespace AdminClient
             else
             {
                 Console.WriteLine("No se pudo modificar, el usuario no exite o esta conectado.");
+            }
+        }
+
+        private static void Ranking(ServiceClient client)
+        {
+            List<Ranking> rankings = client.GetRanking().ToList();
+            foreach (Ranking rank in rankings)
+            {
+                Console.WriteLine($"Jugador: {rank.Nickname} como {rank.Role.ToString()} - fecha: {rank.Date}.  - Puntaje: {rank.Points}");
             }
         }
 
