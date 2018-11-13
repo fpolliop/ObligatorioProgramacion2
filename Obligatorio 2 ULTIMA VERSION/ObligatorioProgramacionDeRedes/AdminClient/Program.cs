@@ -24,7 +24,6 @@ namespace AdminClient
 
         }
 
-        #region MainMenu
         private static int MainMenu()
         {
             Console.WriteLine("");
@@ -71,7 +70,6 @@ namespace AdminClient
                 return 1000;
             }
         }
-        #endregion
 
         private static void ProcessOption(int option, ServiceClient client)
         {
@@ -95,7 +93,6 @@ namespace AdminClient
         private static void RegisterUser(ServiceClient client)
         {
             string name = "";
-            string pass = "";
             bool datoValidoUser = false;
             while (!datoValidoUser)
             {
@@ -104,18 +101,6 @@ namespace AdminClient
                 if (name.Length > 0)
                 {
                     datoValidoUser = true;
-                }
-            }
-
-
-            bool datoValidoPass = false;
-            while (!datoValidoPass)
-            {
-                Console.WriteLine("Ingrese la contraseña: ");
-                pass = Console.ReadLine();
-                if (pass.Length > 0)
-                {
-                    datoValidoPass = true;
                 }
             }
 
@@ -143,6 +128,7 @@ namespace AdminClient
             foreach (var user in users)
             {
                 Console.WriteLine("{0}. " + user.Nickname, cont);
+                cont++;
             }
 
             Console.WriteLine("Escriba el nombre del usuario que desea eliminar: ");
@@ -171,6 +157,7 @@ namespace AdminClient
             foreach (var user in users)
             {
                 Console.WriteLine("{0}. " + user.Nickname, cont);
+                cont++;
             }
 
             Console.WriteLine("Escriba el nombre del usuario que desea modificar: ");
@@ -178,9 +165,6 @@ namespace AdminClient
 
             Console.WriteLine("Escriba el nuevo nombre de usuario: ");
             string newName = Console.ReadLine();
-
-            Console.WriteLine("Escriba la nueva contraseña: ");
-            string newPass = Console.ReadLine();
 
             bool serverResponse = client.ModifyUser(nameToModify, newName);
 
