@@ -228,11 +228,7 @@ namespace Server
             if (userExists == null)
             {
                 User newUser = new User(name);
-                //lock (userLocker)
-                // {
                 usersList.AddUser(newUser);
-
-                //}
                 return true;
             }
             return false;

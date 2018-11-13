@@ -10,6 +10,7 @@ namespace Entities
         private List<Ranking> rankings;
         private List<Statistic> statistics;
 
+        private readonly object userLocker = new object();
         public Repository()
         {
             users = new List<User>();
@@ -19,7 +20,10 @@ namespace Entities
 
         public void AddUser(User user)
         {
-            users.Add(user);
+            lock (userLocker)
+            {
+                users.Add(user);
+            }
         }
 
         public List<User> GetUsers()
@@ -29,7 +33,10 @@ namespace Entities
 
         public void RemoveUser(User user)
         {
-            users.Remove(user);
+            lock (userLocker)
+            {
+                users.Remove(user);
+            }
         }
 
         public void DeleteFirstStatistic()
@@ -76,15 +83,18 @@ namespace Entities
 
         public bool ModifyUser(string name, string newName)
         {
-            foreach(User user in users)
+            lock (userLocker)
             {
-                if (user.Nickname.Equals(name))
+                foreach (User user in users)
                 {
-                    user.Nickname = newName;
-                    return true;
+                    if (user.Nickname.Equals(name))
+                    {
+                        user.Nickname = newName;
+                        return true;
+                    }
                 }
+                return false;
             }
-            return false;
         }
     }
 }
